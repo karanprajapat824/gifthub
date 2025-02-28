@@ -1,0 +1,98 @@
+@import url('https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400..900;1,400..900&family=Caveat:wght@400..700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+.board{
+    height: 80vh;
+    display: grid;
+    place-items: center;
+    margin-top: 5vh;
+    
+}
+
+.board-content{
+    border-radius: 2vh;
+    height: 90%;
+    width: 90%;
+    box-shadow: 0px 1px 5px black;
+    overflow: hidden;
+}
+
+.board-top{
+    height: 20%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0vh 3vw;
+    box-sizing: border-box;
+}
+
+.board-heading{
+    font-size: xx-large;
+    font-weight: 300;
+    font-family: "Alegreya";
+}
+
+.board-top button{
+    padding: 1vh 3vw;
+    border-radius: 1vh;
+    font-size: large;
+    background-color: #704E2E;
+    color: white;
+    font-size: bold;
+    border: 2px solid transparent;
+    cursor: pointer;
+}
+
+.board-top button:hover{
+    background-color:white;
+    color: #704E2E;
+    border: 2px solid #704E2E;
+}
+
+.board-down{
+    background-color: #704E2E;
+    height: 80%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.round-board{
+    height: 100%;
+    width: 25%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 2vh;
+}
+
+.round-image{
+    height: 65%;
+    width: 80%;
+    border: 5px solid white;
+    box-shadow: 0px 1px 10px black;
+    border-radius: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.round-image img{
+    object-fit: cover;
+    height: 100%;
+    width: 100%;
+    border-radius: 100%;
+    transition: transform 500ms;
+}
+
+.round-image img:hover{
+    transform: scale(110%);
+    
+}
+
+.round-board-heading{
+    color: white;
+    font-size: x-large;
+    font-weight: 400;
+    font-family: "Alegreya";
+}

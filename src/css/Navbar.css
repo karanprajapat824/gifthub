@@ -1,0 +1,95 @@
+.navbar{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 10vh;
+    background-color: black;
+}
+.logo img{
+    height: 12vh;
+    width: 15vw;
+    cursor: pointer;
+}
+.search-bar{
+    width: 50%;
+    display: flex;
+}
+
+
+.search-bar input{
+    padding: 1vh 1vw;
+    width: 50%;
+    border-radius: 1vh;
+    outline: none;
+    border: 2px solid black;
+    font-size: medium;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right: none;
+}
+
+.search-bar button{
+    padding: 1vh 1vw;
+    border-radius: 1vh;
+    outline: none;
+    border: 2px solid black;
+    font-size: large;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    display: flex;
+    align-items: center;
+    gap : 5px;
+    cursor: pointer;
+}
+
+.navbar-right{
+    width: 30%;
+    font-size: xx-large;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    padding-right: 3%;
+    gap : 2vw;
+    color : white;
+}
+
+.navbar-right span{
+    font-size: medium;
+    font-weight: bold;
+}
+
+.cart{
+    position: relative;
+    cursor: pointer;
+}
+
+
+.cart div{
+    position: absolute;
+    top : -5px;
+    right: 25px;
+    font-size: medium;
+    font-weight: bolder;
+    background-color: red;
+    color : white;
+    height: 50%;
+    width: 30%;
+    border-radius: 100%;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+.profile{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: end;
+    gap : 5px;
+    cursor: pointer;
+}
+
+.profile div{
+    font-size: large;
+    font-weight: bold;
+}

@@ -1,0 +1,18 @@
+.footer{
+    height: 50vh;
+    background-color: #704E2E;
+    display: flex;
+}
+
+.footer-col{
+    height: 100%;
+    width: 25%;
+    border: 2px solid red;
+    padding: 2vw 3vw;
+}
+
+.footer-heading{
+    font-size: larger;
+    color : white;
+    font-weight: 900;
+}

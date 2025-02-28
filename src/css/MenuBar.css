@@ -1,0 +1,52 @@
+.menu-bar{
+    display: flex;
+    justify-content: start;
+    align-items: center; 
+    box-shadow:0px 0px 10px black;
+    overflow: scroll;
+    scrollbar-width: 0;
+}
+
+.menu-bar::-webkit-scrollbar{
+    display: none;
+}
+
+.menu-bar label{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5vw;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 2vh 2vw;
+    text-decoration: none;
+    cursor: pointer;
+}
+.menu-bar label:hover{
+    color:rgb(186, 74, 74)
+}
+
+.dropdown::-webkit-scrollbar{
+    display: none;
+}
+
+.dropdown{
+    display: flex;
+    justify-content: start;
+    align-items: center; 
+    overflow: scroll;
+    scrollbar-width: 0;
+}
+
+.list{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    padding: 2vh 2vw;
+    gap : 1vh;
+    font-size: medium;
+}
+
+
+

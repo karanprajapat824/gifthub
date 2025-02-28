@@ -1,0 +1,12 @@
+.sidebar{
+    border: 2px solid yellow;
+    width: 40vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.sidebar-category{
+    border: 2px solid black;
+}

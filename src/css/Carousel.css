@@ -1,0 +1,57 @@
+.carousel{
+    height: 50vh;
+    width: 100vw;
+    box-sizing: border-box;
+    overflow: hidden;
+    position: relative ;
+}
+
+.carousel-image{
+    display: flex;
+    height: 50vh;
+    transition:transform 500ms;
+}
+
+
+.carousel-image img{
+    height: 50vh;
+    width: 100vw;
+    object-fit: cover;   
+}
+
+.button{   
+    font-size: 10vh;
+    display: none;
+}
+
+.left-button{
+    position: absolute;
+    top : 40%;
+    color: rgba(0, 0, 0, 0.6);
+    cursor: pointer;
+}
+
+.right-button{
+    position: absolute;
+    top: 40%;
+    right : 0;
+    cursor: pointer;
+}
+
+.dots{
+    position: absolute;
+    top: 85%;
+    left: 50%;
+    font-size: x-large;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.active{
+   font-size: xx-large;
+}
+
+.carousel:hover .button{
+    display: block;
+}
