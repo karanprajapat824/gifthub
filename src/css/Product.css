@@ -1,0 +1,68 @@
+.Mainproduct{
+    display: flex;
+}
+
+.mainproduct-cards{
+    width: 82%;
+    padding: 2vh;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2vw;
+    height: 90vh;
+    overflow: auto;
+}
+
+.mainProduct-card{
+    height: 60vh;
+    width: 18vw;
+    box-shadow: 0px 1px 3px black;
+}
+
+.card-image{
+    height: 70%;
+}
+
+.card-image img{
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    scale: 90%;
+}
+
+.card-description{
+    padding: 1vh 1vw;
+    font-size: small;
+    height: 40%;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.card-info{
+    height: 30%;
+}
+
+.card-name{
+    padding: 0vh 1vw;
+    font-size: x-large;
+    font-weight: 900;
+    color: rgb(84, 80, 80);
+}
+
+.card-price{
+    padding: 0.5vh 1vw;
+    font-size: x-large;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.card-button button{
+    padding: 1vh 2vw;
+    border-radius: 1vh;
+    border: none;
+    background-color: rgb(182, 77, 7);
+    color: white;
+    cursor: pointer;
+}

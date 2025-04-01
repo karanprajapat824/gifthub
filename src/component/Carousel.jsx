@@ -7,11 +7,11 @@ const Carousel = ()=>{
     const [index,setIndex] = useState(0);
 
     const rightShift = ()=>{
-       setIndex((index+1)%3) 
+       setIndex((index+1)%4) 
     }
 
     const leftShift = ()=>{
-        if(index == 0) setIndex(2);
+        if(index == 0) setIndex(3);
         else setIndex(index-1);
     }
 
@@ -23,9 +23,10 @@ const Carousel = ()=>{
     return(
         <div className='carousel'>
             <div className='carousel-image' style={{transform : `translatex(${-index*100}%)`}}>
-            <img src="image2.jpg" alt="" />
-            <img src="image4.jpg" alt="" />
-            <img src="image5.jpg" alt="" />
+            <img src="./websiteImages/carousel1.png" alt="" />
+            <img src="./websiteImages/carousel2.png" alt="" />
+            <img src="./websiteImages/carousel3.png" alt="" />
+            <img src="./websiteImages/carousel4.png" alt="" />
             </div>
             
             <div className='left-button' onClick={leftShift}>
@@ -39,6 +40,7 @@ const Carousel = ()=>{
                 {index == 0 ? <GoDotFill /> : <GoDot />}
                 {index == 1 ? <GoDotFill /> : <GoDot />}
                 {index == 2 ? <GoDotFill /> : <GoDot />}
+                {index == 3 ? <GoDotFill /> : <GoDot />}
             </div>
             
         </div>

@@ -1,5 +1,5 @@
 .carousel{
-    height: 50vh;
+    height: 60vh;
     width: 100vw;
     box-sizing: border-box;
     overflow: hidden;
@@ -8,15 +8,13 @@
 
 .carousel-image{
     display: flex;
-    height: 50vh;
-    transition:transform 500ms;
+    height: 100%;
 }
 
-
 .carousel-image img{
-    height: 50vh;
+    height: 100%;
     width: 100vw;
-    object-fit: cover;   
+    flex-shrink: 0;
 }
 
 .button{   

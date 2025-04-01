@@ -1,155 +1,147 @@
-import MenuBar from './MenuBar';
 import Carousel from './Carousel';
 import Board from './Board';
-import Productcard from "./Productcard";
+import Banner from "./Banner";
 import Footer from "./Footer";
 
 const flower = [
     {
       name : "Rose",
-      image : "rose.webp",
+      image : "./websiteImages/rose.webp",
     },
     {
       name : "Carnations",
-      image : "Carnations.webp"
+      image : "./websiteImages/Carnations.webp"
     },
     {
       name : "Orchids",
-      image : "Orchids.webp"
+      image : "./websiteImages/Orchids.webp"
     },
     {
       name : "Personalization Flowers",
-      image : "Personal.webp"
+      image : "./websiteImages/Personal.webp"
     }
   ];
 
 
-  const cake = [
-    {
-      name : "Choclate Cakes",
-      image : "cake1.webp",
-    },
-    {
-      name : "ButterScotch Cakes",
-      image : "cake2.webp"
-    },
-    {
-      name : "Pineapple Cakes",
-      image : "cake3.webp"
-    },
-    {
-      name : "Fruit Cakes",
-      image : "cake4.webp"
-    }
-  ];
 
   const forman = [
     {
-      name : "Watches",
-      image : "watch.avif"
+      name : "watch",
+      image : "./websiteImages/man-watch.jpg",
+      category : "men"
     },
     {
       name : "Perfumes",
-      image : "man-perfume.webp"
+      image : "./websiteImages/man-perfume.webp",
+      category : "men"
     },
     {
       name : "Wallets",
-      image : "wallet.jpg"
+      image : "./websiteImages/man-wallet.jpg",
+      category : "men"
     },
     {
       name : "Belts",
-      image : "balt.jpg"
+      image : "./websiteImages/man-belt.webp",
+      category : "men"
     },
     {
-      image : "bracelet.jpg",
-      name : "Bracelets"
+      image : "./websiteImages/man-brecelat.jpg",
+      name : "Bracelets",
+      category : "men"
     },
     {
       name : "Shoes",
-      image : "man-shoes.jpg"
+      image : "./websiteImages/man-shoes.jpeg",
+      category : "men"
     },
     {
       name : "Man Fashions",
-      image : "man-fasion.jpg"
+      image : "./websiteImages/man-fashion.jpeg",
+      category : "men"
     },
     {
       name : "Key-Chains",
-      image : "keychain.jpg"
+      image : "./websiteImages/man-keychains.webp",
+      category : "men"
     },
     {
       name : "Mugs",
-      image : "man-mug.webp"
+      image : "./websiteImages/man-mug.jpeg",
+      category : "men"
     }
   ];
 
   const forwomen = [
     {
       name : "Watches",
-      image : "watch-women.jpeg"
+      image : "./websiteImages/women-watch.webp"
     },
     {
       name : "Perfumes",
-      image : "w-perfumes.jpeg"
+      image : "./websiteImages/women-perfume.webp"
     },
     {
       name : "Teddy Bears",
-      image : "teddy.jpeg"
+      image : "./websiteImages/women-teddy.webp"
     },
     {
       name : "Choclates",
-      image : "choclates.webp"
+      image : "./websiteImages/choclate.jpeg"
     },
     {
-      image : "women-jewellery.jpeg",
+      image : "./websiteImages/women-jewellery.jpeg",
       name : "Jewellary"
     },
     {
       name :"MakeUp",
-      image : "women-makeup-kit.jpg"
+      image : "./websiteImages/women-makup.jpeg"
     },
     {
       name :"Bags",
-      image :"beg.jpeg"
+      image :"./websiteImages/women-bag.jpeg"
     },
     {
       name : "Shoes",
-      image : "women-shoes.jpg"
+      image : "./websiteImages/women-shoes.webp"
     },
     {
       name : "Women Fashions",
-      image : "w-fashions.jpeg"
+      image : "./websiteImages/women-fashion.jpg"
     },
     {
       name : "Key-Chains",
-      image : "keychain.jpg"
-    },
+      image : "./websiteImages/women-keychain.webp"
+    }
   ];
 
   const forkids = [
     {
       name : "Watches",
-      image : "k-watches.jpeg"
+      image : "./websiteImages/kid-image.jpeg"
     },
     {
       name :"Toys",
-      image : "k-toys.jpeg"
+      image : "./websiteImages/kid-toy.jpeg"
     },
     {
-      name :"",
-      image : ""
+      name :"Fashion",
+      image : "./websiteImages/kid-fashion.jpeg"
+    },
+    {
+      name :"Shoes",
+      image : "./websiteImages/kid-shoes.jpeg"
     }
   ];
 
 const Dashboard = ()=>{
     return(
         <div>     
-            <MenuBar />
             <Carousel />
-            <Productcard products={forman} mainHeading="For Man"/>
-            <Productcard products={forwomen} mainHeading="For Women"/>
-            <Productcard products={forkids} mainHeading="For Kids"/>
+            <Banner products={forman} mainHeading="For Man"/>
+            <Banner products={forwomen} mainHeading="For Women"/>
+            <Banner products={forkids} mainHeading="For Kids"/>
             <Board mainHeading={"Flowers"} board={flower}/>
-            <Board mainHeading={"Cakes"} board={cake}/>
             <Footer />
         </div>
     )

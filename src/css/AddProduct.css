@@ -1,0 +1,21 @@
+.addproduct-container{
+    min-height: 100vh;
+
+}
+
+.addproduct-fields{
+    display: flex;
+    gap: 5vw;
+    align-items: center;
+    padding: 2vh;
+}
+
+.addproduct-fields input{
+    padding : 1vh;
+    border-radius: 1vh;
+}
+
+.addproduct-container button{
+    padding: 1vh  2vh;
+    margin: 2vw;
+}

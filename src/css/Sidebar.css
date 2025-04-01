@@ -1,12 +1,47 @@
 .sidebar{
-    border: 2px solid yellow;
     width: 40vh;
+    box-shadow: 0px 2px 5px black;
+    height: 90vh;
     display: flex;
-    justify-content: center;
+    justify-content: start;
     align-items: center;
     flex-direction: column;
+    overflow: scroll;
 }
 
-.sidebar-category{
-    border: 2px solid black;
+.filter-price{
+    display: flex;
+    flex-direction: column;
+    gap: 1vw;
+    width: 100%;
+    padding: 3vh 2vw;
+    font-size: large;
+    font-weight: bold;
+}
+
+.filter{
+    padding: 2vh 2vw;
+    width: 100%;
+    background-color: #704E2E;
+    font-size: larger;
+    font-weight: 800;  
+    color: white;
+}
+
+.filter-category{
+    width: 100%;
+    padding: 2vh 2vw;
+}
+
+.filter-heading{
+    font-size: large;
+    font-weight: bolder;
+    padding: 2vh 0vw;
+}
+
+.filter-content{
+    display: flex;
+    padding: 5px;
+    gap: 10px;
+    padding-left : 2vw;
 }
