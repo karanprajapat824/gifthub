@@ -1,178 +1,145 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const mysql = require("mysql2");
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
 const jwt = require("jsonwebtoken");
 
-const port = 4040;
-const secret = "nikitakiapp"
+dotenv.config(); 
+
 const app = express();
+const port = 4040;
 
 app.use(bodyParser.json());
 app.use(cors());
 
-const database = mysql.createConnection({
-    host : "localhost",
-    user : "root",
-    password : "12345678",
-    database : "gifthub"
+mongoose.connect(process.env.MONGODB_CONNECTION_URL)
+  .then(() => console.log("MongoDB connected!"))
+  .catch(err => console.error("MongoDB error:", err))
+;
+
+const userSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    cart: [{ type: String }],
+    address: String,
+    phoneNumber: { type: String },
+    role: { type: String, default: "user" }
+});
+
+const productSchema = new mongoose.Schema({
+  productName: { type: String, required: true },
+  category: { type: String, required: true }, // e.g. "clothing", "electronics"
+  price: { type: Number, required: true },
+  brand: String,
+  images: [String],
+  inStock: { type: Boolean, default: true },
+  details: { type: mongoose.Schema.Types.Mixed, required: false },
+  createdAt: { type: Date, default: Date.now }
 });
 
 
-database.connect((error)=>{
-    if(error) console.log(error);
-    else console.log("Database Connect sussefully");
-});
+const User = mongoose.model("User",userSchema);
+const Product = mongoose.model("Product",productSchema);
 
-
-app.post("/register",async (req,res)=>{
-    
-    try{
-        const {name,password,email} = req.body;
-        if(!name || !password || !email)
-        {
-            return res.status(400).json({message : "All field are requered"});
-        }
-    
-        const query = `SELECT email FROM user WHERE email = ?`;
-    
-        database.query(query,[email],(error,result)=>{
-            if(error)
-            {
-                return res.status(400).json({message : error});
-            } 
-            if(result.length > 0)
-            {
-                return res.status(400).json({message : "User already exist",result});
-            }
-
-            const newUser = `INSERT INTO user(name,email,password) values(?,?,?)`;
-            database.query(newUser,[name,email,password],(error,result)=>{
-                if(error)
-                {
-                        return res.json({message : error});
-                } 
-                if(result){
-                    const token = jwt.sign({email},secret);
-                    return res.status(200).json({message : "User register successfully",token});
-                }  
-            });
-        });
-    }catch(e)
-    {
-        console.log(e);
+app.get("/verifyToken", (req, res) => {
+    const authHeader = req.headers.authorization;
+  
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({ message: "Token missing or malformed" });
+    }
+  
+    const token = authHeader.split(" ")[1];
+  
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      res.status(200).json({
+        message: "Token is valid",
+        user: decoded
+      });
+    } catch (err) {
+      res.status(401).json({ message: "Invalid or expired token" });
     }
 });
 
-app.post("/verifyToken",(req,res)=>{
-    try{
-        const {token}  = req.body;
-        if(!token)
-        {
-            return res.status(400).json({message : "Token required"});
-        }
-        jwt.verify(token,secret,(error,result)=>{
-        if(error)
-        {
-            return res.status(400).json({message : "Invalid token"});
-        }
-        return res.status(200).json({message : "Token verified",result});
-        });
-    }catch(e)
-    {
-        console.log(e);
-    }
-    
-});
+app.post("/register", async (req, res) => {
+    const { name, email, password} = req.body;
+  
+    try {
+        const existingUser = await User.findOne({email});
 
-app.post("/login",(req,res)=>{
-    try{
-        const {email,password} = req.body;
-        if(!email || !password)
-        {
-            return res.status(400).json({message : "All field are required"});
-        }
-        const query = `SELECT * FROM user WHERE email = ? AND password = ?`;
-    
-        database.query(query,[email,password],(error,result)=>{
-            if(error)
-            {
-                return res.status(400).json({message : error});
-            }
-            if(result.length > 0)
-            {
-                const token = jwt.sign({email},secret);
-                return res.status(200).json({message : "Login success",token});
-            }
-            else{
-                return res.status(401).json({message : "Invalid email or password"});
-            }
-        })
-    }catch(e)
-    {
-        console.log(e);
+        if(existingUser) {
+              return res.status(409).json({ message: "User already exists" });
+          }
+  
+      const newUser = new User({
+        name,
+        email,
+        password,
+      });
+  
+      await newUser.save();
+  
+      const token = jwt.sign(
+        { id: newUser._id, email: newUser.email, role: newUser.role },
+        process.env.JWT_SECRET
+      );
+  
+      res.status(201).json({
+        message: "User registered successfully",
+        token,
+        role : "user"
+      });
+    } catch (error) {
+      console.error("Register error:", error);
+      res.status(500).json({ message: "Server error" });
     }
 });
 
-app.post("/addproduct",(req,res)=>{
-    try{
-        const {name,description,price,url,category,product} = req.body;
-        if(!name || !description || !price || !url || !category || !product)
-        {
-            return res.status(400).json({message : "All fields are requered"});
-        }
-        
+app.post("/login", async (req, res) => {
+    const { email,password } = req.body;
+    console.log(email);
+    try {
+      if (!password || !email) {
+        return res.status(400).json({ message: "Email and password are required" });
+      }
+  
+      const user = await User.findOne({
+          email: email ,
+      });
+  
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+  
+      if(password === user.password)
+      {
+        const token = jwt.sign(
+            {email: user.email, role: user.role },
+            process.env.JWT_SECRET
+        );
+        return res.status(200).json({message : "Login Sussecc",token,role : user.role});
+      }
+      else res.status(401).json({message : "Invalid Password"});
 
-        const query = `INSERT INTO product(product_name,product_description,product_price,product_category,image_url,product) values(?,?,?,?,?,?)`;
-
-        database.query(query,[name,description,price,category,url,product],(error,result)=>{
-            if(error) {
-                console.log(error);
-                return res.status(400).json({message : error});
-            }
-            else {
-                return res.status(200).json({message : "product add susseffully"});
-            }
-        })
-    }catch(e)
-    {
-        console.log(e);
+  
+    } catch (error) {
+      console.error("Login error:", error);
+      res.status(500).json({ message: "Server error" });
     }
-    
-    
-
 });
+  
 
-app.get("/getproduct/:name/:category",(req,res)=>{
-    const {name,category} = req.params;
-    if(!name || !category)
-    {
-        return res.status(400).json({message : "All fields are requered"});
-    }
-
-    const query = `SELECT * FROM product WHERE product = ? AND product_category = ?`;
-
-    database.query(query,[name,category],(error,result)=>{
-        if(error) return res.status(400).json({message : error});
-        else {
-            return res.status(200).json({data : result});
-        }
-    })
+app.get("/",async (req,res)=>{
+    const data = await User.findOne({email : "karanprajapat824@gmail.com"});
+    data.role = "admin";
+    await data.save();
+    res.json(data);
 })
 
-app.get("/checktable",(req,res)=>{
-    const query = `delete from product where product_name = 'FOGG'`
 
-    database.query(query,(error,result)=>{
-        if(error) return res.json({message : error});
-        else 
-        {
-            return res.json({result});
-        }
-    })
-})
 
-app.listen(port,()=>{
-    console.log(`Listening on port ${port}`);
+app.listen(port, () => {
+  console.log(`Server listening on port ${port}`);
 });
-

@@ -13,11 +13,11 @@ import {createContext,useState,useEffect} from 'react';
 export const AuthContext = createContext();
 
 function App() {
-  
-
+   
     const [login,setLogin] = useState(false);
     const [token,setToken] = useState(null);
-    
+    const [role,setRole] = useState(null);
+
     const handleRegister = async (name,email,password)=>{
         const response = await fetch("http://localhost:4040/register",{
             method : "POST",
@@ -33,6 +33,7 @@ function App() {
             setToken(data.token);
             localStorage.setItem("token",data.token);
             setLogin(true);
+            setRole(data.role);
             return "success";
         }
         else {
@@ -42,6 +43,22 @@ function App() {
     }
 
     const handleLogin = async (email,password)=>{
+        const validDomains = ["gmail.com", "yahoo.com", "outlook.com", "hotmail.com"]
+        alert(email);
+        if (!email || !email.includes('@')) {
+            return "Invalid email address";
+        }else 
+        {
+            const domain = email.split("@")[1];
+            if (!validDomains.includes(domain)) {
+                return "Invalid email address";
+            }
+        }
+
+        if (!password || password.length < 5 || password.length > 20) {
+            return "Password must be between 5 and 20 characters";
+        }
+
         const response = await fetch("http://localhost:4040/login",{
             method : "POST",
             headers : {
@@ -56,6 +73,7 @@ function App() {
             setToken(data.token);
             localStorage.setItem("token",data.token);
             setLogin(true);
+            setRole(data.role);
             return "success";
         }
         else {
@@ -68,6 +86,7 @@ function App() {
         setLogin(false);
         localStorage.removeItem("token");
         setToken(null);
+        setRole("user");
     }
 
     useEffect(()=>{
@@ -76,19 +95,22 @@ function App() {
         {
             const verifyToken = async ()=>{
                 const response = await fetch("http://localhost:4040/verifyToken",{
-                    method : "POST",
+                    method : "GET",
                     headers : {
                         "Content-Type" : "application/json",
+                        "authorization" : `Bearer ${token}`
                     },
-                    body : JSON.stringify({token})
                 });
 
                 if(response.ok)
                 {
+                    const data = await response.json();
+                    setRole(data.role);
                     setLogin(true);
                 }
                 else {
                     setLogin(false);
+                    setRole("user");
                     localStorage.removeItem("token");
                 }
             }
@@ -99,7 +121,7 @@ function App() {
   return (
    <div>
     <BrowserRouter >
-    <AuthContext.Provider value={{login,handleRegister,setLogin,handleLogin,logout}}>
+    <AuthContext.Provider value={{login,handleRegister,setLogin,handleLogin,logout,role}}>
       <Navbar />
       <Routes>
       <Route path="/" element={<Dashboard />}></Route>

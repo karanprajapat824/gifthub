@@ -1,52 +1,102 @@
-import { useState } from 'react';
-import './../css/Login.css';
+import React, { useState,useContext} from 'react';
+import { FaEye } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
-import { useContext } from 'react';
-import { AuthContext } from '../App';
-const Login = ()=>{
+import { FaEyeSlash } from "react-icons/fa";
+import {AuthContext} from './../App';
+import './../css/Login.css';
+
+const Login = () => {
     const [email,setEmail] = useState("");
     const [password,setPassword] = useState("");
-    const {handleLogin} = useContext(AuthContext);
-    const [error,setError] = useState("");
+    const [showPassword,setShowPassword] = useState(false);
+    const {handleLogin,login} = useContext(AuthContext);
+    const navigateTo = useNavigate();
+    const [message,setMessage] = useState("");
 
-    const navigate = useNavigate();
-
-    const login = async ()=>{
-        const response = await handleLogin(email,password);
-        if(response === "success")
+    const doLogin = async ()=>{
+        const result = await handleLogin(email,password);
+        if(result == "success")
         {
-            navigate("/");
+            setMessage(result);
+            navigateTo("/");
         }
         else {
-            setError(response);
+            setMessage("*"+result);
         }
     }
 
-    return(
-        <div className='login'> 
-<div className="form">
-    <p id="heading">Login</p>
-    <div className="field">
-    <svg className="input-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-    <path d="M13.106 7.222c0-2.967-2.249-5.032-5.482-5.032-3.35 0-5.646 2.318-5.646 5.702 0 3.493 2.235 5.708 5.762 5.708.862 0 1.689-.123 2.304-.335v-.862c-.43.199-1.354.328-2.29.328-2.926 0-4.813-1.88-4.813-4.798 0-2.844 1.921-4.881 4.594-4.881 2.735 0 4.608 1.688 4.608 4.156 0 1.682-.554 2.769-1.416 2.769-.492 0-.772-.28-.772-.76V5.206H8.923v.834h-.11c-.266-.595-.881-.964-1.6-.964-1.4 0-2.378 1.162-2.378 2.823 0 1.737.957 2.906 2.379 2.906.8 0 1.415-.39 1.709-1.087h.11c.081.67.703 1.148 1.503 1.148 1.572 0 2.57-1.415 2.57-3.643zm-7.177.704c0-1.197.54-1.907 1.456-1.907.93 0 1.524.738 1.524 1.907S8.308 9.84 7.371 9.84c-.895 0-1.442-.725-1.442-1.914z"></path>
-    </svg>
-      <input onChange={(event)=>setEmail(event.target.value)} autocomplete="off" placeholder="email" className="input-field" type="text" />
-    </div>
-    <div className="field">
-    <svg className="input-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-    <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"></path>
-    </svg>
-      <input onChange={(event)=>setPassword(event.target.value)} placeholder="Password" className="input-field" type="password" />
-    </div>
-    <div className="error-message">{error}</div>
-    <div className="btn1">
-    <button onClick={login} className="button1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Login&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
-    </div>
-    <button className="button3">Forgot Password</button>
-    <div className='signup'>Don't Have an Account ? <button onClick={()=>navigate("/register")}>Signup</button></div>
-</div>
+    const handleEmail = (e)=>{
+        setMessage("");
+        setEmail(e.target.value);
+    }
+    
+    const handlePassword = (e)=>{
+        setMessage("");
+        setPassword(e.target.value);
+    }
+
+  return (
+    <div className="login-wrapper">
+      <div className="login-container">
+        <div className="login-form-container">
+          <div className="login-form">
+            <h1>Welcome Back</h1>
+            <p className="subtitle">Please enter your credentials to login</p>
+            
+            <div>
+              <div className="form-group">
+                <label htmlFor="email">Email Address</label>
+                <input 
+                  type="email" 
+                  id="email" 
+                  placeholder="Enter your email" 
+                  className="form-input"
+                  onChange={handleEmail}
+                />
+              </div>
+              
+              <div className="form-group">
+                <label htmlFor="password">Password</label>
+                <div className='password-field'>
+                <input 
+                  type={showPassword ? "text" : "password"} 
+                  id="password" 
+                  placeholder="Enter your password" 
+                  className="form-input"
+                  onChange={handlePassword}
+                />
+                <div onClick={()=>setShowPassword(!showPassword)}>
+                {
+                    showPassword ? 
+                    <FaEye className='password-icons'/>
+                    : <FaEyeSlash  className='password-icons'/>
+                }
+                </div>
+                </div>
+              </div>
+              <div className="messages">
+              <div className="error-message">
+                {message}
+              </div>
+              <div className="forgot-password">
+                <a href="/forgot-password">Forgot password?</a>
+              </div>
+              </div>
+              <button onClick={doLogin} className="login-button">Login</button>
+              
+              <div className="register-link">
+                Don't have an account? <a href="/register">Create one here</a>
+              </div>
+            </div>
+          </div>
         </div>
-    )
-}
+        
+        <div className="login-image-container">
+          <img src="login-image.png" alt="Login visual" className="login-image" />
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default Login;
