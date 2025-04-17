@@ -5,7 +5,7 @@ import Navbar from './component/Navbar';
 import Login from './component/Login';
 import Register from "./component/Register";
 import Cart from "./component/Cart";
-import AddProduct from './component/AddProduct';
+import AdminDashboard from './Admin/AdminDashboard';
 
 import { BrowserRouter,Routes,Route } from "react-router-dom";
 import {createContext,useState,useEffect} from 'react';
@@ -18,33 +18,54 @@ function App() {
     const [token,setToken] = useState(null);
     const [role,setRole] = useState(null);
 
-    const handleRegister = async (name,email,password)=>{
-        const response = await fetch("http://localhost:4040/register",{
-            method : "POST",
-            headers : {
-                "Content-Type" : "application/json",
-            },
-            body : JSON.stringify({name,email,password})
-        });
-
-        if(response.ok)
-        {
-            const data = await response.json();
-            setToken(data.token);
-            localStorage.setItem("token",data.token);
-            setLogin(true);
-            setRole(data.role);
-            return "success";
+    const handleRegister = async (name, email, password) => {
+        const validDomains = ["gmail.com", "yahoo.com", "outlook.com", "hotmail.com"];
+    
+        if (!name || name.trim().length < 2) {
+            return "Name must be at least 2 characters long";
         }
-        else {
-            const data = await response.json();
-            return data.message;
+    
+        if (!email || !email.includes('@')) {
+            return "Invalid email address";
+        } else {
+            const domain = email.split("@")[1];
+            if (!validDomains.includes(domain)) {
+                return "Invalid email domain";
+            }
         }
-    }
-
+    
+        if (!password || password.length < 5 || password.length > 20) {
+            return "Password must be between 5 and 20 characters";
+        }
+    
+        try {
+            const response = await fetch("http://localhost:4040/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ name, email, password }),
+            });
+    
+            if (response.ok) {
+                const data = await response.json();
+                setToken(data.token);
+                localStorage.setItem("token", data.token);
+                setLogin(true);
+                setRole(data.role);
+                return "success";
+            } else {
+                const data = await response.json();
+                return data.message || "Registration failed";
+            }
+        } catch (error) {
+            console.error("Registration error:", error);
+            return "An error occurred. Please try again.";
+        }
+    };
+    
     const handleLogin = async (email,password)=>{
         const validDomains = ["gmail.com", "yahoo.com", "outlook.com", "hotmail.com"]
-        alert(email);
         if (!email || !email.includes('@')) {
             return "Invalid email address";
         }else 
@@ -124,13 +145,22 @@ function App() {
     <AuthContext.Provider value={{login,handleRegister,setLogin,handleLogin,logout,role}}>
       <Navbar />
       <Routes>
-      <Route path="/" element={<Dashboard />}></Route>
-      <Route path="/products/:productname/:category" element={<Product />}></Route>
-      <Route path="/login" element={<Login />}/>
-      <Route path="/register" element={<Register />}/>
-      <Route path="/cart" element={<Cart />}/>
-      <Route path="/addproducts" element={<AddProduct />} />
-      </Routes>
+            {login && role === "admin" && (
+              <>
+                <Route path="/" element={<AdminDashboard />} />
+              </>
+            )}
+
+            {(!login || role !== "admin") && (
+              <>
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/products/:productname/:category" element={<Product />} />
+                <Route path="/cart" element={<Cart />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+              </>
+            )}
+          </Routes>
     </AuthContext.Provider>
     </BrowserRouter>
    </div>

@@ -30,9 +30,10 @@ const userSchema = new mongoose.Schema({
 
 const productSchema = new mongoose.Schema({
   productName: { type: String, required: true },
-  category: { type: String, required: true }, // e.g. "clothing", "electronics"
+  category: { type: String, required: true },
   price: { type: Number, required: true },
   brand: String,
+  for : {type : String,default : "all"},
   images: [String],
   inStock: { type: Boolean, default: true },
   details: { type: mongoose.Schema.Types.Mixed, required: false },
@@ -42,6 +43,22 @@ const productSchema = new mongoose.Schema({
 
 const User = mongoose.model("User",userSchema);
 const Product = mongoose.model("Product",productSchema);
+
+const verify = async (req, res, next) => {
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+
+    if (!token) {
+      return res.status(401).json({ message: "Access Denied: No token provided" });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded; 
+    next(); 
+  } catch (error) {
+    return res.status(403).json({ message: "Invalid or expired token" });
+  }
+};
 
 app.get("/verifyToken", (req, res) => {
     const authHeader = req.headers.authorization;
@@ -129,12 +146,80 @@ app.post("/login", async (req, res) => {
       res.status(500).json({ message: "Server error" });
     }
 });
+
+app.get("/getProduct/:category/:name/:for",async (req, res) => {
+  try {
+    const { category, for: targetFor, name } = req.params;
+
+    const query = {
+      category: category.toLowerCase(),
+      for: targetFor.toLowerCase(),
+      productName: new RegExp(name, "i")
+    };
+
+    const products = await Product.find(query);
+
+    if (products.length === 0) {
+      return res.status(404).json({ message: "No products found" });
+    }
+
+    res.json(products);
+
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+app.post("/addProduct",verify, async (req, res) => {
+  try {
+    if (req.user.role !== "admin") {
+      return res.status(403).json({ message: "Access Denied! Only admin can access" });
+    }
+
+    const {
+      productName,
+      category,
+      price,
+      brand,
+      for: productFor = "all",
+      images = [],
+      inStock = true,
+      details = {},
+    } = req.body;
+
+    if (!productName || !category || !price) {
+      return res.status(400).json({ message: "productName, category and price are required." });
+    }
+
+    const newProduct = new Product({
+      productName,
+      category,
+      price,
+      brand,
+      for: productFor,
+      images,
+      inStock,
+      details
+    });
+
+    await newProduct.save();
+    res.status(201).json({ message: "Product added successfully", product: newProduct });
+
+  } catch (error) {
+    console.error("Error adding product:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+
+
+
+
   
 
 app.get("/",async (req,res)=>{
-    const data = await User.findOne({email : "karanprajapat824@gmail.com"});
-    data.role = "admin";
-    await data.save();
+    const data = await User.find({});
     res.json(data);
 })
 
