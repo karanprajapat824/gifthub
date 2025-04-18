@@ -1,28 +1,35 @@
-import React from "react";
-import { Link, Routes, Route } from "react-router-dom";
-import AddProduct from "./AddProduct";
-import DeleteProduct from "./DeleteProduct";
-import ManageSellers from "./ManageSellers";
-import "./admin.css";
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import './Admin.css';
 
 const AdminDashboard = () => {
+  const navigate = useNavigate();
+
   return (
-    <div className="admin-container">
-      <aside className="admin-sidebar">
-        <h2>Admin Panel</h2>
-        <ul>
-          <li><Link to="add-product">Add Product</Link></li>
-          <li><Link to="delete-product">Delete Product</Link></li>
-          <li><Link to="manage-sellers">Manage Sellers</Link></li>
-        </ul>
-      </aside>
-      <main className="admin-content">
-        <Routes>
-          <Route path="add-product" element={<AddProduct />} />
-          <Route path="delete-product" element={<DeleteProduct />} />
-          <Route path="manage-sellers" element={<ManageSellers />} />
-        </Routes>
-      </main>
+    <div className="admin-dashboard">
+      <h1 className="admin-title">Admin Dashboard</h1>
+      <div className="admin-card-container">
+        <div className="admin-card" onClick={() => navigate('/add-product')}>
+          <h2>Add Item</h2>
+          <p>Add a new product to your store.</p>
+        </div>
+        <div className="admin-card" onClick={() => navigate('/delete-product')}>
+          <h2>Delete Item</h2>
+          <p>Remove products from the store.</p>
+        </div>
+        <div className="admin-card" onClick={() => navigate('/update-product')}>
+          <h2>Update Item</h2>
+          <p>Modify details of existing products.</p>
+        </div>
+        <div className="admin-card" onClick={() => navigate('/manage-orders')}>
+          <h2>Manage Orders</h2>
+          <p>Track and update order statuses.</p>
+        </div>
+        <div className="admin-card" onClick={() => navigate('/manage-users')}>
+          <h2>Manage Users</h2>
+          <p>View and control user accounts.</p>
+        </div>
+      </div>
     </div>
   );
 };

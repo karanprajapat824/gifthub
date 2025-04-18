@@ -8,7 +8,7 @@ import { useContext } from 'react';
 
 const Navbar = ()=>{
     const navigateTo = useNavigate();
-    const {login,role} = useContext(AuthContext);
+    const {login} = useContext(AuthContext);
     
     return(
         <div>
@@ -23,11 +23,6 @@ const Navbar = ()=>{
                 </div>
 
                 <div className='navbar-right'>
-                    {
-                        role == "admin" && <div className='profile'>
-                        <div onClick={()=>navigateTo("/addproducts")}>Add Products</div>
-                        </div>
-                    }
                     <div  
                     className='profile'>
                         <FaUserCircle />
