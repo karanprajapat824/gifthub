@@ -1,9 +1,9 @@
 import React, { useState, useContext } from "react";
-import "./Admin.css"; 
+import "./Admin.css";
 import { AuthContext } from "../App";
 
 const AddProduct = () => {
-  const { role,token } = useContext(AuthContext);
+  const { role, token } = useContext(AuthContext);
   const [form, setForm] = useState({
     productName: "",
     category: "",
@@ -14,6 +14,9 @@ const AddProduct = () => {
     inStock: true,
     details: "",
   });
+
+
+  
 
   const [message, setMessage] = useState("");
 
@@ -49,7 +52,7 @@ const AddProduct = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+          "Authorization": `Bearer ${token}`,
         },
         body: JSON.stringify(form),
       });
@@ -80,7 +83,6 @@ const AddProduct = () => {
   return (
     <div className="add-product-container">
       <h2>Add New Product</h2>
-      {message && <p className="message">{message}</p>}
       <div className="product-form">
         <label>Product Name:</label>
         <input type="text" name="productName" value={form.productName} onChange={handleChange} required />
@@ -122,7 +124,7 @@ const AddProduct = () => {
         <button type="button" onClick={addImageField}>
           + Add another image
         </button>
-
+        {message && <p className="message">{message}</p>}
         <button type="submit" className="submit-btn" onClick={handleSubmit}>Add Product</button>
       </div>
     </div>

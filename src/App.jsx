@@ -7,7 +7,7 @@ import Register from "./component/Register";
 import Cart from "./component/Cart";
 import AdminDashboard from './Admin/AdminDashboard';
 import AddProduct from './Admin/AddProduct';
-
+import ManageFilters from './Admin/ManageFilters';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { createContext, useState, useEffect } from 'react';
 
@@ -19,7 +19,8 @@ function App() {
   const [role, setRole] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Register
+  
+
   const handleRegister = async (name, email, password) => {
     const validDomains = ["gmail.com", "yahoo.com", "outlook.com", "hotmail.com"];
 
@@ -66,7 +67,6 @@ function App() {
     }
   };
 
-  // Login
   const handleLogin = async (email, password) => {
     const validDomains = ["gmail.com", "yahoo.com", "outlook.com", "hotmail.com"];
 
@@ -153,7 +153,7 @@ function App() {
   return (
     <div>
       <BrowserRouter>
-        <AuthContext.Provider value={{ login, handleRegister, setLogin, handleLogin, logout, role }}>
+        <AuthContext.Provider value={{ login, handleRegister, setLogin, handleLogin, logout, role, token}}>
           <Navbar />
           {loading ? (
             <div style={{ textAlign: 'center', marginTop: '2rem' }}>Loading...</div>
@@ -163,6 +163,7 @@ function App() {
                 <>
                   <Route path="/" element={<AdminDashboard />} />
                   <Route path="/add-product" element={<AddProduct />} />
+                  <Route path="/manage-filters" element={<ManageFilters />}/>
                 </>
               ) : (
                 <>

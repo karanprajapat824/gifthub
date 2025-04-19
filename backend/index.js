@@ -40,14 +40,28 @@ const productSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
+const filterOptionSchema = new mongoose.Schema({
+  heading: String,
+  key: String,
+  type: { type: String, enum: ["checkbox", "range"] },
+  options: [String],       
+  min: Number,             
+  max: Number     
+}, { _id: false });
+
+const categorySchema = new mongoose.Schema({
+   category : {type : String,required : true},
+   filter : [filterOptionSchema]
+});
 
 const User = mongoose.model("User",userSchema);
 const Product = mongoose.model("Product",productSchema);
+const Category = mongoose.model("category",categorySchema);
+
 
 const verify = async (req, res, next) => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
-    console.log(token);
     if (!token) {
       return res.status(401).json({ message: "Access Denied: No token provided" });
     }
@@ -171,7 +185,7 @@ app.get("/getProduct/:category/:name/:for",async (req, res) => {
   }
 });
 
-app.post("/addProduct",verify, async (req, res) => {
+app.post("/addProduct",verify,async (req, res) => {
   try {
     if (req.user.role !== "admin") {
       return res.status(403).json({ message: "Access Denied! Only admin can access" });
@@ -212,14 +226,49 @@ app.post("/addProduct",verify, async (req, res) => {
   }
 });
 
+app.post("/seedProduct", async (req, res) => {
+  try {
+    const {products} = req.body;
+    console.log(products);
+    if (!Array.isArray(products) || products.length === 0) {
+      return res.status(400).json({ message: "Please provide an array of products." });
+    }
 
+    for (const product of products) {
+      if (!product.productName || !product.category || !product.price) {
+        return res.status(400).json({ message: "Each product must include productName, category, and price." });
+      }
+    }
+
+    const insertedProducts = await Product.insertMany(products);
+
+    res.status(201).json({
+      message: `${insertedProducts.length} product(s) seeded successfully.`,
+      products: insertedProducts
+    });
+  } catch (error) {
+    console.error("Error seeding products:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+app.get("/getAllCategory", verify, async (req, res) => {
+  try {
+    const categories = await Product.distinct("category");
+    console.log(categories);
+    res.status(200).json(categories);
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    res.status(500).json({ message: "Failed to fetch categories" });
+  }
+});
 
 
 
   
 
 app.get("/",async (req,res)=>{
-    const data = await User.find({});
+    const data = await Product.find({});
     res.json(data);
 })
 

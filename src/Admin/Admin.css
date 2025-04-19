@@ -46,57 +46,204 @@
     font-size: 0.9rem;
   }
   
-
   .add-product-container {
-    max-width: 600px;
+    max-width: 700px;
     margin: 50px auto;
-    background: #f9f9f9;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    background: linear-gradient(to right, #f9f9f9, #e8f4f8);
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  h2 {
+    text-align: center;
+    font-size: 2rem;
+    color: #333;
+    font-family: 'Arial', sans-serif;
   }
   
   .product-form {
     display: flex;
     flex-direction: column;
+    gap: 20px;
   }
   
   .product-form label {
-    margin-top: 15px;
     font-weight: bold;
+    color: #333;
+    font-size: 1.1rem;
   }
   
   .product-form input,
   .product-form textarea {
-    padding: 10px;
+    padding: 12px;
     font-size: 1rem;
     margin-top: 5px;
     border-radius: 8px;
     border: 1px solid #ccc;
+    background-color: #fff;
+    transition: border-color 0.3s ease;
+  }
+  
+  .product-form input:focus,
+  .product-form textarea:focus {
+    border-color: #007bff;
+    outline: none;
   }
   
   .product-form textarea {
     min-height: 100px;
+    resize: vertical;
   }
   
   .submit-btn {
-    margin-top: 25px;
-    padding: 12px;
+    margin-top: 5px;
+    padding: 14px;
     background: #007bff;
     color: white;
     font-weight: bold;
     border: none;
     border-radius: 10px;
     cursor: pointer;
+    font-size: 1.1rem;
+    transition: background 0.3s ease;
   }
   
   .submit-btn:hover {
     background: #0056b3;
   }
   
+  .submit-btn:active {
+    background: #004494;
+  }
+  
+  button {
+    padding: 10px;
+    background: #e2e2e2;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  button:hover {
+    background: #ddd;
+  }
+  
   .message {
-    margin-top: 10px;
     font-weight: bold;
     color: green;
+    font-size: 2rem;
+  }
+  
+
+  .manage-schema {
+    padding: 1rem;
+  }
+  
+  .title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+  
+  .category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+  }
+  
+  .category-card {
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    background-color: #f9f9f9;
+    text-align: center;
+    transition: background-color 0.2s ease;
+  }
+  
+  .category-card:hover {
+    background-color: #eaeaea;
+  }
+  
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+  }
+  
+  .modal-content {
+    background-color: white;
+    padding: 1.5rem;
+    width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+    border-radius: 0.5rem;
+    position: relative;
+  }
+  
+  .modal-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+  
+  .filter-box {
+    background-color: #f3f3f3;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+  }
+  
+  .input {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-radius: 0.3rem;
+    border: 1px solid #ccc;
+  }
+  
+  .range-inputs {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .add-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.3rem;
+    cursor: pointer;
+  }
+  
+  .modal-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+  }
+  
+  .cancel-btn {
+    background-color: transparent;
+    color: #555;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .save-btn {
+    background-color: #28a745;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.3rem;
+    cursor: pointer;
   }
   
