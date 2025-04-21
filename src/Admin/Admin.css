@@ -160,6 +160,9 @@
     cursor: pointer;
     background-color: #f9f9f9;
     text-align: center;
+    font-size: xx-large;
+    font-weight: bolder;
+    text-transform: uppercase;
     transition: background-color 0.2s ease;
   }
   

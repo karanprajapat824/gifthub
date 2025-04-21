@@ -1,66 +1,59 @@
 import Sidebar from './Sidebar';
 import './../css/Product.css';
-import { useParams } from 'react-router-dom';
+import { useParams,useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { MdOutlineCurrencyRupee } from "react-icons/md";
-const Product = ()=>{
 
-    const {productname,category} = useParams();
-    const [product,setProduct] = useState([]);
+const Product = () => {
+    const { category, gender } = useParams();
+    const [product, setProduct] = useState([]);
+    const navigateTo = useNavigate();
 
-    useEffect(()=>{
-        const fetchData = async ()=>{
-            const response = await fetch(`http://localhost:4040/getproduct/${productname}/${category}`,{
-                method : "GET",
-                headers : {
-                    "Content-Type" : "application/json"
+    useEffect(() => {
+        const fetchData = async () => {
+            const response = await fetch(`http://localhost:4040/getproduct/${category}/${gender}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
                 }
             });
 
-            if(response.ok)
-            {
+            if (response.ok) {
                 const item = await response.json();
-                setProduct(item.data);
-                console.log(item.data);
+                setProduct(item);
+                console.log(item);
             }
         }
-
         fetchData();
+    }, [category, gender]);
 
-    },[]);
-
-    return(
+    return (
         <div className='Mainproduct'>
-            <Sidebar />
+            <Sidebar category={category} />
             <div className='mainproduct-cards'>
-                {
-                    product?.map((item)=>(
-                    <div className='mainProduct-card'>
-                    <div className='card-image'>
-                        <img src={item.image_url}></img>
+                {product?.map((item, index) => (
+                    <div className='mainProduct-card' key={index}>
+                        <div className='card-image'>
+                            <img src={item.images[0] || "/default.jpg"} alt={item.productName} />
+                        </div>
+                        <div className='card-info'>
+                            <div className='card-name' title={item.productName}>
+                                {item.productName.length > 35
+                                    ? item.productName.slice(0, 35) + "..."
+                                    : item.productName}
+                            </div>
+                            <div className='card-bottom'>
+                                <div className='card-price'>
+                                    <MdOutlineCurrencyRupee />{item.price}
+                                </div>
+                                <button onClick={()=>navigateTo(`/product-details/${item._id}`)} className='card-button'>Buy Now</button>
+                            </div>
+                        </div>
                     </div>
-                    <div className='card-info'>
-    <div className='card-name'>{item.product_name}</div>
-    <div className='card-description' title={item.product_description}>
-        {item.product_description.length > 60 
-            ? item.product_description.slice(0, 60) + " ..." 
-            : item.product_description}
-    </div>
-    <div style={{display: "flex", alignItems: "center",justifyContent : "space-around"}}>
-        <div className='card-price'><MdOutlineCurrencyRupee />{item.product_price}</div>
-        <div className='card-button'>
-            <button>Add to Cart</button>
+                ))}
+            </div>
         </div>
-    </div>
-</div>
- 
-                    </div>
-                    ))
-                }
-                    
-            </div>            
-        </div>
-    )
-}
+    );
+};
 
 export default Product;

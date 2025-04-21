@@ -7,9 +7,9 @@ import Register from "./component/Register";
 import Cart from "./component/Cart";
 import AdminDashboard from './Admin/AdminDashboard';
 import AddProduct from './Admin/AddProduct';
-import ManageFilters from './Admin/ManageFilters';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { createContext, useState, useEffect } from 'react';
+import ProductDetail from './component/ProductDetail';
 
 export const AuthContext = createContext();
 
@@ -163,15 +163,15 @@ function App() {
                 <>
                   <Route path="/" element={<AdminDashboard />} />
                   <Route path="/add-product" element={<AddProduct />} />
-                  <Route path="/manage-filters" element={<ManageFilters />}/>
                 </>
               ) : (
                 <>
                   <Route path="/" element={<Dashboard />} />
-                  <Route path="/products/:productname/:category" element={<Product />} />
+                  <Route path="/products/:category/:gender" element={<Product />} />
                   <Route path="/cart" element={<Cart />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/register" element={<Register />} />
+                  <Route path="/product-details/:id" element={<ProductDetail />} />
                 </>
               )}
             </Routes>

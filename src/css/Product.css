@@ -1,5 +1,6 @@
 .Mainproduct{
     display: flex;
+    flex-direction: row;
 }
 
 .mainproduct-cards{
@@ -7,6 +8,7 @@
     padding: 2vh;
     display: flex;
     flex-wrap: wrap;
+    flex-shrink: 0;
     gap: 2vw;
     height: 90vh;
     overflow: auto;
@@ -15,6 +17,7 @@
 .mainProduct-card{
     height: 60vh;
     width: 18vw;
+    flex-grow: 1;
     box-shadow: 0px 1px 3px black;
 }
 
@@ -29,13 +32,6 @@
     scale: 90%;
 }
 
-.card-description{
-    padding: 1vh 1vw;
-    font-size: small;
-    height: 40%;
-    overflow: hidden;
-    cursor: pointer;
-}
 
 .card-info{
     height: 30%;
@@ -43,9 +39,10 @@
 
 .card-name{
     padding: 0vh 1vw;
-    font-size: x-large;
+    font-size: large;
     font-weight: 900;
     color: rgb(84, 80, 80);
+    height: 8vh;
 }
 
 .card-price{
@@ -58,11 +55,25 @@
 }
 
 
-.card-button button{
+.card-button{
     padding: 1vh 2vw;
     border-radius: 1vh;
     border: none;
-    background-color: rgb(182, 77, 7);
+    background-color: green;
     color: white;
     cursor: pointer;
+    width: 50%;
+    font-size: 12px;
+    transition: 500ms;
+}
+
+.card-button:hover{
+    background-color: blueviolet;
+}
+
+.card-bottom{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 90%;
 }

@@ -42,21 +42,19 @@ const productSchema = new mongoose.Schema({
 
 const filterOptionSchema = new mongoose.Schema({
   heading: String,
-  key: String,
-  type: { type: String, enum: ["checkbox", "range"] },
   options: [String],       
-  min: Number,             
-  max: Number     
 }, { _id: false });
 
 const categorySchema = new mongoose.Schema({
    category : {type : String,required : true},
-   filter : [filterOptionSchema]
+   filter : [filterOptionSchema],
+   min : {type : Number},
+   max : {type : Number}
 });
 
 const User = mongoose.model("User",userSchema);
 const Product = mongoose.model("Product",productSchema);
-const Category = mongoose.model("category",categorySchema);
+const Filter = mongoose.model("filter",categorySchema);
 
 
 const verify = async (req, res, next) => {
@@ -161,14 +159,13 @@ app.post("/login", async (req, res) => {
     }
 });
 
-app.get("/getProduct/:category/:name/:for",async (req, res) => {
+app.get("/getProduct/:category/:for",async (req, res) => {
   try {
-    const { category, for: targetFor, name } = req.params;
+    const { category, for: targetFor } = req.params;
 
     const query = {
       category: category.toLowerCase(),
       for: targetFor.toLowerCase(),
-      productName: new RegExp(name, "i")
     };
 
     const products = await Product.find(query);
@@ -252,25 +249,97 @@ app.post("/seedProduct", async (req, res) => {
   }
 });
 
-app.get("/getAllCategory", verify, async (req, res) => {
+app.get("/getAllCategory/:gender",async (req, res) => {
   try {
-    const categories = await Product.distinct("category");
-    console.log(categories);
-    res.status(200).json(categories);
+    let { gender } = req.params;
+    gender = gender.toLowerCase();
+    const matchStage = gender ? { for: gender } : {};
+
+    const categoryProducts = await Product.aggregate([
+      { $match: matchStage },
+      {
+        $group: {
+          _id: "$category",
+          product: { $first: "$$ROOT" } 
+        }
+      },
+      {
+        $replaceRoot: { newRoot: "$product" } 
+      }
+    ]);
+
+    res.status(200).json(categoryProducts);
   } catch (error) {
-    console.error("Error fetching categories:", error);
-    res.status(500).json({ message: "Failed to fetch categories" });
+    console.error("Error fetching categories with products:", error);
+    res.status(500).json({ message: "Failed to fetch category products." });
+  }
+});
+
+app.get("/getFilter/:category",async (req,res)=>{
+   try{
+      const {category} = req.params;
+      const data = await Filter.findOne({category});
+      res.status(200).json(data);
+   }catch(error)  
+   {
+    console.error("Failed to get filter:", error);
+    res.status(500).json({ message: "Failed to get filter." });
+   }
+})
+
+app.post("/updateFilter",async (req, res) => {
+  try {
+    const { category, heading, options,min,max} = req.body;
+    let item = await Filter.findOne({ category });
+    const newFilter = { heading, options };
+
+    if (!item) {
+      const created = new Filter({
+        category,
+        filter: [newFilter],
+        min,
+        max
+      });
+
+      await created.save();
+      return res.status(200).json({ message: "Filter created successfully." });
+    } else {
+      item.filter.push(newFilter);
+      await item.save();
+      return res.status(200).json({ message: "Filter updated successfully." });
+    }
+
+  } catch (error) {
+    console.error("Failed to update filter:", error);
+    res.status(500).json({ message: "Failed to update filter information." });
+  }
+});
+
+app.get('/getProductById/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await Product.findById(id);
+
+    if (!product) return res.status(404).json({ message: 'Product not found' });
+
+    res.status(200).json(product);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
   }
 });
 
 
 
-  
-
-app.get("/",async (req,res)=>{
-    const data = await Product.find({});
+app.get("/", async (req, res) => {
+  try {
+    let data = await Product.find({});
     res.json(data);
-})
+  } catch (error) {
+    console.error("Error updating products:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
 
 
 

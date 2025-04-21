@@ -29,10 +29,6 @@ const AdminDashboard = () => {
           <h2>Manage Users</h2>
           <p>View and control user accounts.</p>
         </div>
-        <div className="admin-card" onClick={() => navigate('/manage-filters')}>
-          <h2>Manage filters by category</h2>
-          <p>Manage filters of a product using its category</p>
-        </div>
       </div>
     </div>
   );
