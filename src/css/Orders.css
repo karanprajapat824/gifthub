@@ -1,0 +1,48 @@
+.orders-page {
+    padding: 2rem;
+    max-width: 1000px;
+    margin: auto;
+  }
+  
+  .orders-page h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .order-card {
+    display: flex;
+    gap: 1rem;
+    background: #f9f9f9;
+    padding: 1rem;
+    border-radius: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    align-items: center;
+  }
+  
+  .order-card img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+  
+  .order-info {
+    flex-grow: 1;
+  }
+  
+  .order-info h3 {
+    margin: 0;
+    margin-bottom: 0.5rem;
+  }
+  
+  .order-info p {
+    margin: 0.3rem 0;
+    font-size: 0.95rem;
+  }
+  

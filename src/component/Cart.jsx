@@ -1,42 +1,67 @@
-import React, { useState } from 'react';
-import './../css/Cart.css';
+import React, { useEffect, useState, useContext } from "react";
+import "./../css/Cart.css";
+import { AuthContext } from "../App";
+import { useNavigate } from "react-router-dom";
 
 function Cart() {
-  const [cartItems, setCartItems] = useState([
-    {
-      id: "1",
-      name: "Premium Wireless Headphones",
-      price: 249.99,
-      image: "watch.avif",
-      quantity: 1,
-    },
-    {
-      id: "2",
-      name: "Organic Cotton T-Shirt",
-      price: 29.99,
-      image: "watch.avif",
-      quantity: 2,
-    },
-    {
-      id: "3",
-      name: "Smart Fitness Watch",
-      price: 199.99,
-      image: "watch.avif",
-      quantity: 1,
-    },
-  ]);
+  const [cartItems, setCartItems] = useState([]);
+  const { email, token } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchCart = async () => {
+      try {
+        const response = await fetch(`http://localhost:4040/getCart/${email}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (response.ok) {
+          const data = await response.json();
+          const formatted = data.map((item) => ({
+            id: item._id,
+            name: item.productName,
+            price: item.price,
+            image: item.images?.[0] || "/placeholder.svg",
+            quantity: 1, 
+          }));
+          setCartItems(formatted);
+        }
+      } catch (error) {
+        console.error("Failed to fetch cart items:", error);
+      }
+    };
+
+    if (email) fetchCart();
+  }, [email, token]);
 
   const updateQuantity = (id, newQuantity) => {
     if (newQuantity < 1) return;
-    setCartItems(
-      cartItems.map((item) =>
+    setCartItems((prev) =>
+      prev.map((item) =>
         item.id === id ? { ...item, quantity: newQuantity } : item
       )
     );
   };
 
-  const removeItem = (id) => {
-    setCartItems(cartItems.filter((item) => item.id !== id));
+  const removeItem = async (id) => {
+    try {
+      alert(id);
+      const response = await fetch(`http://localhost:4040/removeFromCart`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ email, productId: id }),
+      });
+
+      if (response.ok) {
+        setCartItems((prev) => prev.filter((item) => item.id !== id));
+      }
+    } catch (error) {
+      console.error("Error removing item from cart:", error);
+    }
   };
 
   const calculateSubtotal = (price, quantity) => price * quantity;
@@ -68,7 +93,7 @@ function Cart() {
                   <div className="cart-item">
                     <div className="img-container">
                       <img
-                        src={item.image || "/placeholder.svg"}
+                        src={item.image}
                         alt={item.name}
                         className="item-image"
                       />
@@ -76,37 +101,33 @@ function Cart() {
                     <div className="item-details">
                       <div>
                         <h3 className="item-name">{item.name}</h3>
-                        <p className="item-price">${item.price.toFixed(2)}</p>
+                        <p className="item-price">₹{item.price.toFixed(2)}</p>
                       </div>
                       <div className="quantity-controls">
                         <div className="quantity-btns">
                           <button
                             className="btn-icon"
-                            onClick={() =>
-                              updateQuantity(item.id, item.quantity - 1)
-                            }
+                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
                           >
                             &#8722;
                           </button>
                           <span className="quantity-text">{item.quantity}</span>
                           <button
                             className="btn-icon"
-                            onClick={() =>
-                              updateQuantity(item.id, item.quantity + 1)
-                            }
+                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
                           >
                             &#43;
                           </button>
                         </div>
                         <div className="item-actions">
                           <span className="subtotal">
-                            ${calculateSubtotal(item.price, item.quantity).toFixed(2)}
+                            ₹{calculateSubtotal(item.price, item.quantity).toFixed(2)}
                           </span>
                           <button
                             className="btn-icon btn-destructive"
                             onClick={() => removeItem(item.id)}
                           >
-                            &#128465; 
+                            🗑️
                           </button>
                         </div>
                       </div>
@@ -123,7 +144,7 @@ function Cart() {
               <div className="summary-details">
                 <div className="summary-row">
                   <span className="summary-label">Subtotal</span>
-                  <span>${calculateTotal().toFixed(2)}</span>
+                  <span>₹{calculateTotal().toFixed(2)}</span>
                 </div>
                 <div className="summary-row">
                   <span className="summary-label">Shipping</span>
@@ -132,9 +153,14 @@ function Cart() {
                 <hr className="separator" />
                 <div className="summary-row total-row">
                   <span>Total</span>
-                  <span>${calculateTotal().toFixed(2)}</span>
+                  <span>₹{calculateTotal().toFixed(2)}</span>
                 </div>
-                <button className="btn btn-primary">Proceed to Checkout</button>
+                <button
+                  className="btn btn-primary"
+                  onClick={() => navigate("/checkout")}
+                >
+                  Proceed to Checkout
+                </button>
                 <a href="/products" className="btn btn-outline">Continue Shopping</a>
               </div>
             </div>

@@ -1,0 +1,250 @@
+.buynow {
+    display: flex;
+    padding: 3vh 4vw;
+    flex-wrap: wrap;
+  }
+  
+  .buynow-left-section {
+    width: 35%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+  }
+  
+  .thumbnail-gallery {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  
+  .thumbnail-gallery img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border: 2px solid transparent;
+    cursor: pointer;
+  }
+  
+  .thumbnail-gallery img.active {
+    border-color: #000;
+  }
+  
+  .main-image img {
+    width: 100%;
+    max-width: 400px;
+    object-fit: contain;
+    border: 1px solid #ccc;
+    padding: 10px;
+    background: #fff;
+  }
+  
+  .buynow-right-section {
+    width: 60%;
+    padding: 2rem;
+  }
+  
+  .section {
+    margin-bottom: 2rem;
+  }
+
+  .section select {
+    padding: 0.5rem;
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+
+  .add-new-address{
+    padding: 2vh 3vw;
+    margin-top: 1rem;
+    background-color:black;
+    color: white;
+    cursor: pointer;
+    transition: 500ms;
+  }
+
+  .add-new-address:hover{
+    background-color: #fff;
+    color: black;
+}
+  
+.section h3 {
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .section label {
+    display: block;
+    margin-bottom: 0.5rem;
+    margin-right: 1vw;
+  }
+
+  .section input{
+    margin-right: 1vw;
+  }
+  
+  .secondary {
+    margin-top: 1rem;
+    padding: 0.4rem 1rem;
+    background: #eee;
+    border: 1px solid #ccc;
+    cursor: pointer;
+  }
+  
+  .buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  
+  .confirm {
+    background-color: green;
+    color: white;
+    padding: 0.7rem 1.5rem;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .cancel {
+    background-color: red;
+    color: white;
+    padding: 0.7rem 1.5rem;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+  }
+  
+  .modal {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+  
+  .modal h2 {
+    margin-bottom: 1rem;
+  }
+  
+  .modal input,
+  .modal textarea {
+    width: 100%;
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+  }
+  
+  .modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+  }
+  
+  .submit-btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  
+  .cancel-btn {
+    background-color: #ccc;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .section input[type="text"] {
+    padding : 2vh;
+    border-radius: 1vh;
+    border: 2px solid black;
+    width: 100%;
+  }
+
+  .section input[type="number"]{
+    padding : 2vh;
+    border-radius: 1vh;
+    border: 2px solid black;
+    width: 100%;
+  }
+
+  .order-confirm-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 90%;
+    max-width: 500px;
+    padding: 2rem;
+    background-color: #ffffff;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    border-radius: 20px;
+    z-index: 1000;
+    text-align: center;
+    animation: fadeInScale 0.3s ease;
+  }
+  
+  .order-confirm-modal h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: #2e7d32;
+  }
+  
+  .order-confirm-modal p {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+  }
+  
+  .modal-buttons button {
+    padding: 0.6rem 1.2rem;
+    font-size: 1rem;
+    background-color: #1976d2;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .modal-buttons button:hover {
+    background-color: #1565c0;
+  }
+  
+  @keyframes fadeInScale {
+    0% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.9);
+    }
+    100% {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+  }
+  

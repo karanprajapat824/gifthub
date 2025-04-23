@@ -10,6 +10,9 @@ import AddProduct from './Admin/AddProduct';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { createContext, useState, useEffect } from 'react';
 import ProductDetail from './component/ProductDetail';
+import BuyNow from './component/BuyNow';
+import Orders from './component/Orders';
+import UserProfile from './component/UserProfile';
 
 export const AuthContext = createContext();
 
@@ -18,8 +21,7 @@ function App() {
   const [token, setToken] = useState(null);
   const [role, setRole] = useState(null);
   const [loading, setLoading] = useState(true);
-
-  
+  const [email,setEmail] = useState(null);
 
   const handleRegister = async (name, email, password) => {
     const validDomains = ["gmail.com", "yahoo.com", "outlook.com", "hotmail.com"];
@@ -56,6 +58,8 @@ function App() {
         localStorage.setItem("token", data.token);
         setLogin(true);
         setRole(data.role);
+        setEmail(data.email);
+        localStorage.setItem("email",data.email);
         return "success";
       } else {
         const data = await response.json();
@@ -98,6 +102,8 @@ function App() {
         localStorage.setItem("token", data.token);
         setLogin(true);
         setRole(data.role);
+        setEmail(data.email);
+        localStorage.setItem("email",data.email);
         return "success";
       } else {
         const data = await response.json();
@@ -113,11 +119,14 @@ function App() {
     setLogin(false);
     setToken(null);
     setRole(null);
+    setEmail(null);
+    localStorage.removeItem("email");
     localStorage.removeItem("token");
   };
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
+    const storedEmail = localStorage.getItem("email");
     if (storedToken) {
       setToken(storedToken);
       const verifyToken = async () => {
@@ -134,6 +143,7 @@ function App() {
             const data = await response.json();
             setLogin(true);
             setRole(data.user.role);
+            setEmail(storedEmail);
           } else {
             logout();
           }
@@ -153,7 +163,7 @@ function App() {
   return (
     <div>
       <BrowserRouter>
-        <AuthContext.Provider value={{ login, handleRegister, setLogin, handleLogin, logout, role, token}}>
+        <AuthContext.Provider value={{ login, handleRegister, setLogin, handleLogin, logout, role, token,email}}>
           <Navbar />
           {loading ? (
             <div style={{ textAlign: 'center', marginTop: '2rem' }}>Loading...</div>
@@ -172,6 +182,9 @@ function App() {
                   <Route path="/login" element={<Login />} />
                   <Route path="/register" element={<Register />} />
                   <Route path="/product-details/:id" element={<ProductDetail />} />
+                  <Route path="/buy-now/:id" element={<BuyNow />}/>
+                  <Route path="/orders" element={<Orders />} />
+                  <Route path="/profile" element={<UserProfile />} />
                 </>
               )}
             </Routes>
