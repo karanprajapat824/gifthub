@@ -191,6 +191,8 @@ app.get("/getProduct/:category/:for",async (req, res) => {
       for: targetFor.toLowerCase(),
     };
 
+    console.log(query);
+
     const products = await Product.find(query);
 
     if (products.length === 0) {
@@ -228,10 +230,10 @@ app.post("/addProduct",verify,async (req, res) => {
 
     const newProduct = new Product({
       productName,
-      category,
+      category : category.toLowerCase(),
       price,
       brand,
-      for: productFor,
+      for: productFor.toLowerCase,
       images,
       inStock,
       details
@@ -312,7 +314,7 @@ app.get("/getFilter/:category",async (req,res)=>{
 
 app.post("/updateFilter",async (req, res) => {
   try {
-    const { category, heading, options,min,max} = req.body;
+    const {category, heading, options,min,max} = req.body;
     let item = await Filter.findOne({ category });
     const newFilter = { heading, options };
 
@@ -548,7 +550,12 @@ app.get('/getUserByEmail/:email', verify, async (req, res) => {
 
 app.get("/", async (req, res) => {
   try {
-    let data = await User.deleteOne({email : "krnprajapat01@gmail.com"});
+    let data = await Product.find({category : "Perfumes"});
+    for(let item of data)
+    {
+      item.category = "perfumes";
+      await item.save();
+    }
     res.json(data);
   } catch (error) {
     console.error("Error updating products:", error);

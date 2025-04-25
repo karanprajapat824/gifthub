@@ -8,7 +8,7 @@ import { useContext } from 'react';
 
 const Navbar = ()=>{
     const navigateTo = useNavigate();
-    const {login} = useContext(AuthContext);
+    const {login,logout} = useContext(AuthContext);
     
     return(
         <div>
@@ -27,7 +27,10 @@ const Navbar = ()=>{
                     className='profile'>
                         <FaUserCircle />
                         {
-                            login ? <div onClick={()=>navigateTo("/profile")}>Profile</div> : 
+                            login ? <><div onClick={()=>navigateTo("/profile")}>Profile</div>
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            <div onClick={logout}>Logout</div>
+                            </> : 
                             <div onClick={()=>navigateTo("/login")}>Login</div>
                         }
                     </div>
