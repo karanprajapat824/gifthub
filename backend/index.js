@@ -549,6 +549,88 @@ app.get('/getUserByEmail/:email', verify, async (req, res) => {
   }
 });
 
+app.get("/getAllProducts",async (req, res) => {
+  try {
+    const products = await Product.find({});
+    res.status(200).json(products);
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    res.status(500).json({ message: "Server error while fetching products" });
+  }
+});
+
+
+app.delete("/deleteProduct/:id", verify, async (req, res) => {
+  const { id } = req.params;
+
+  if (req.user.role !== "admin") {
+    return res.status(403).json({ message: "Unauthorized: Admins only" });
+  }
+
+  try {
+    const deletedProduct = await Product.findByIdAndDelete(id);
+
+    if (!deletedProduct) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    res.status(200).json({ message: "Product deleted successfully", product: deletedProduct });
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    res.status(500).json({ message: "Server error while deleting product" });
+  }
+});
+
+
+app.put('/updateProduct/:id', verify, async (req, res) => {
+  const { id } = req.params;
+  const updatedData = req.body;
+  console.log(id);
+  try {
+    const product = await Product.findById(id);
+    
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    Object.keys(updatedData).forEach((key) => {
+      product[key] = updatedData[key];
+    });
+
+    await product.save();
+
+    res.json({ message: "Product updated successfully", product });
+  } catch (error) {
+    console.error("Error updating product:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+app.get('/searchProducts', async (req, res) => {
+  const { product } = req.query;
+
+  if (!product) {
+    return res.status(400).json({ message: "Search query is required." });
+  }
+
+  try {
+    const products = await Product.find({
+      $or: [
+        { productName: { $regex: product, $options: 'i' } },
+        { brand: { $regex: product, $options: 'i' } },
+        { category: { $regex: product, $options: 'i' } },
+      ],
+    });
+
+    res.status(200).json(products);
+
+  } catch (error) {
+    console.error('Error during search:', error);
+    res.status(500).json({ message: "Server error." });
+  }
+});
+
+
 
 app.get("/", async (req, res) => {
   try {

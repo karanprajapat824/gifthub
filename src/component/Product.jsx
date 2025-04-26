@@ -24,13 +24,29 @@ const Product = () => {
                 console.log(item);
             }
         }
-        fetchData();
+
+        const fetchAllProducts = async () => {
+            const response = await fetch(`http://localhost:4040/getAllproducts`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                setProduct(data);
+            }
+        }
+        if(category && gender) fetchData();
+        else fetchAllProducts();
     }, [category, gender]);
 
     return (
         <div className='Mainproduct'>
-            <Sidebar category={category} />
-            <div className='mainproduct-cards'>
+            {
+                category && gender && <Sidebar category={category} />
+            }
+            <div className='mainproduct-cards' style={{width : category && gender ? "80vw" : "100vw"}}>
                 {product?.map((item, index) => (
                     <div className='mainProduct-card' key={index}>
                         <div className='card-image'>

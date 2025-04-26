@@ -4,12 +4,12 @@ import { FaUserCircle } from "react-icons/fa";
 import { FiShoppingCart } from "react-icons/fi";
 import { useNavigate } from 'react-router-dom';
 import {AuthContext} from '../App';
-import { useContext } from 'react';
+import { useContext,useState } from 'react';
 
 const Navbar = ()=>{
     const navigateTo = useNavigate();
     const {login,logout} = useContext(AuthContext);
-    
+    const [search,setSearch] = useState("");
     return(
         <div>
             <div className='navbar'>
@@ -17,7 +17,15 @@ const Navbar = ()=>{
                     <img src='./websiteImages/gift-logo1.png'></img>
                 </div>
                 <div className='search-bar'>
-                    <input placeholder='Search Anything.....'></input>
+                    <input placeholder='Search Anything.....'
+                    onchange={(e)=>setSearch(e.target.value)}
+                    onKeyDown={(e)=>{
+                        if(e.key === "Enter"){
+                            navigateTo("/products?product="+search);
+                        }
+                    }
+                    }
+                    ></input>
                     <button>
                     Search<FcSearch style={{fontSize : "1.5vw"}}/></button>
                 </div>

@@ -13,6 +13,9 @@ import ProductDetail from './component/ProductDetail';
 import BuyNow from './component/BuyNow';
 import Orders from './component/Orders';
 import UserProfile from './component/UserProfile';
+import DeleteProduct from './Admin/DeleteProduct';
+import UpdateProduct from "./Admin/UpdateProduct";
+import UpdateInfo from "./Admin/UpdateInfo";
 
 export const AuthContext = createContext();
 
@@ -173,6 +176,9 @@ function App() {
                 <>
                   <Route path="/" element={<AdminDashboard />} />
                   <Route path="/add-product" element={<AddProduct />} />
+                  <Route path="/delete-product" element={<DeleteProduct />} />
+                  <Route path="/update-product" element={<UpdateProduct />}/>
+                  <Route path="/update-product/:id" element={<UpdateInfo />} />
                 </>
               ) : (
                 <>
@@ -185,6 +191,7 @@ function App() {
                   <Route path="/buy-now/:id" element={<BuyNow />}/>
                   <Route path="/orders" element={<Orders />} />
                   <Route path="/profile" element={<UserProfile />} />
+                  <Route path="/products" element={<Product />} />
                 </>
               )}
             </Routes>
