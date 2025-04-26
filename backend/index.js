@@ -182,16 +182,23 @@ app.post("/login", async (req, res) => {
     }
 });
 
-app.get("/getProduct/:category/:for",async (req, res) => {
+app.post("/getProducts",async (req, res) => {
   try {
-    const { category, for: targetFor } = req.params;
+    const { category,gender} = req.body;
+    let query = {};
+    if(!gender)
+    {
+      query = {
+        category: { $regex: `.*${category}.*`, $options: "i" },
+      }; 
+    }
+    else {
+      query = {
+        category: { $regex: `.*${category}.*`, $options: "i" },
+        for: { $regex: `.*${gender}.*`, $options: "i" },
+      };
+    }
 
-    const query = {
-      category: category.toLowerCase(),
-      for: targetFor.toLowerCase(),
-    };
-
-    console.log(query);
 
     const products = await Product.find(query);
 
@@ -200,12 +207,14 @@ app.get("/getProduct/:category/:for",async (req, res) => {
     }
 
     res.json(products);
-
   } catch (error) {
     console.error("Error fetching products:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
+
+
 
 app.post("/addProduct",verify,async (req, res) => {
   try {
@@ -606,9 +615,8 @@ app.put('/updateProduct/:id', verify, async (req, res) => {
   }
 });
 
-app.get('/searchProducts', async (req, res) => {
-  const { product } = req.query;
-
+app.post('/searchProducts', async (req, res) => {
+  const {product} = req.body;
   if (!product) {
     return res.status(400).json({ message: "Search query is required." });
   }

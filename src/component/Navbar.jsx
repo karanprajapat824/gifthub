@@ -10,6 +10,21 @@ const Navbar = ()=>{
     const navigateTo = useNavigate();
     const {login,logout} = useContext(AuthContext);
     const [search,setSearch] = useState("");
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const response = await fetch(`http://localhost:4040/getUserInfo`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            });
+            if (response.ok) {
+                const item = await response.json();
+                console.log(item);
+            }
+        }
+    },[]);
     return(
         <div>
             <div className='navbar'>
@@ -18,15 +33,15 @@ const Navbar = ()=>{
                 </div>
                 <div className='search-bar'>
                     <input placeholder='Search Anything.....'
-                    onchange={(e)=>setSearch(e.target.value)}
+                    onChange={(e)=>setSearch(e.target.value)}
                     onKeyDown={(e)=>{
-                        if(e.key === "Enter"){
-                            navigateTo("/products?product="+search);
+                        if(e.key === "Enter")
+                        {
+                            navigateTo(`/products?search=${search}`)
                         }
-                    }
-                    }
+                    }}
                     ></input>
-                    <button>
+                    <button onClick={()=>navigateTo(`/products?search=${search}`)}>
                     Search<FcSearch style={{fontSize : "1.5vw"}}/></button>
                 </div>
 

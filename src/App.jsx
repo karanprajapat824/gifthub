@@ -192,6 +192,7 @@ function App() {
                   <Route path="/orders" element={<Orders />} />
                   <Route path="/profile" element={<UserProfile />} />
                   <Route path="/products" element={<Product />} />
+                  <Route path="/products/:category" element={<Product />} />
                 </>
               )}
             </Routes>

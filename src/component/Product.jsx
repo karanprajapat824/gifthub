@@ -1,27 +1,31 @@
 import Sidebar from './Sidebar';
 import './../css/Product.css';
-import { useParams,useNavigate } from 'react-router-dom';
+import { useParams,useNavigate, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { MdOutlineCurrencyRupee } from "react-icons/md";
 
 const Product = () => {
-    const { category, gender } = useParams();
+    let { category,gender} = useParams();
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const search = queryParams.get('search'); 
     const [product, setProduct] = useState([]);
     const navigateTo = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await fetch(`http://localhost:4040/getproduct/${category}/${gender}`, {
-                method: "GET",
+            console.log(category);
+            const response = await fetch(`http://localhost:4040/getProducts`, {
+                method: "POST",
                 headers: {
                     "Content-Type": "application/json"
-                }
+                },
+                body : JSON.stringify({category,gender})
             });
-
+            
             if (response.ok) {
                 const item = await response.json();
                 setProduct(item);
-                console.log(item);
             }
         }
 
@@ -37,7 +41,23 @@ const Product = () => {
                 setProduct(data);
             }
         }
-        if(category && gender) fetchData();
+
+        const fetchBySearch = async () => {
+            const response = await fetch(`http://localhost:4040/searchProducts`, {
+                method : "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body : JSON.stringify({product : search})
+            });
+            if(response.ok){
+                const data = await response.json();
+                setProduct(data);
+            }
+        }
+
+        if(search) fetchBySearch();
+        else if(category || gender) fetchData();
         else fetchAllProducts();
     }, [category, gender]);
 
