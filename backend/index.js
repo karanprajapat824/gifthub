@@ -224,6 +224,7 @@ app.post("/addProduct",verify,async (req, res) => {
       details = {},
     } = req.body;
 
+
     if (!productName || !category || !price) {
       return res.status(400).json({ message: "productName, category and price are required." });
     }
@@ -233,11 +234,12 @@ app.post("/addProduct",verify,async (req, res) => {
       category : category.toLowerCase(),
       price,
       brand,
-      for: productFor.toLowerCase,
+      for: productFor.toLowerCase(),
       images,
       inStock,
       details
     });
+
 
     await newProduct.save();
     res.status(201).json({ message: "Product added successfully", product: newProduct });
@@ -550,10 +552,10 @@ app.get('/getUserByEmail/:email', verify, async (req, res) => {
 
 app.get("/", async (req, res) => {
   try {
-    let data = await Product.find({category : "Perfumes"});
+    let data = await Product.find({for : "function toLowerCase() { [native code] }"});
     for(let item of data)
     {
-      item.category = "perfumes";
+      item.for = "women";
       await item.save();
     }
     res.json(data);

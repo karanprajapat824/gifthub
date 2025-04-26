@@ -250,3 +250,12 @@
     cursor: pointer;
   }
   
+  .product-form select {
+    padding: 12px;
+    font-size: 1rem;
+    margin-top: 5px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    transition: border-color 0.3s ease;
+  }

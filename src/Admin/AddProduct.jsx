@@ -22,18 +22,21 @@ const AddProduct = () => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-
+  
     if (name.startsWith("image")) {
       const index = Number(name.split("-")[1]);
       const newImages = [...form.images];
       newImages[index] = value;
-      setForm({ ...form, images: newImages });
+      setForm((prevForm) => ({ ...prevForm, images: newImages }));
     } else if (type === "checkbox") {
-      setForm({ ...form, [name]: checked });
+      setForm((prevForm) => ({ ...prevForm, [name]: checked }));
+    } else if (name === "for") {
+      setForm((prevForm) => ({ ...prevForm, for: value }));
     } else {
-      setForm({ ...form, [name]: value });
+      setForm((prevForm) => ({ ...prevForm, [name]: value }));
     }
   };
+  
 
   const addImageField = () => {
     setForm({ ...form, images: [...form.images, ""] });
@@ -97,7 +100,14 @@ const AddProduct = () => {
         <input type="text" name="brand" value={form.brand} onChange={handleChange} />
 
         <label>For (e.g. men, women, kids, all):</label>
-        <input type="text" name="for" value={form.for} onChange={handleChange} />
+        <select name="for" value={form.for} onChange={handleChange}>
+        <option value="">-- Select --</option>
+        <option value="men">Men</option>
+        <option value="women">Women</option>
+        <option value="kids">Kids</option>
+        <option value="all">All</option>
+        </select>
+
 
         <label>In Stock:</label>
         <input type="checkbox" name="inStock" checked={form.inStock} onChange={handleChange} />
