@@ -4,6 +4,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const jwt = require("jsonwebtoken");
+const Fuse = require('fuse.js');
 
 dotenv.config(); 
 
@@ -24,7 +25,7 @@ const userSchema = new mongoose.Schema({
     password: { type: String, required: true },
     cart: [{ type: String }],
     address: [{type : String}],
-    phoneNumber: { type: String },
+    phoneNumber: { type: String,required: false },
     role: { type: String, default: "user" }
 });
 
@@ -116,7 +117,6 @@ app.get("/verifyToken", (req, res) => {
 
 app.post("/register", async (req, res) => {
     const { name, email, password} = req.body;
-  
     try {
         const existingUser = await User.findOne({email});
 
@@ -128,7 +128,10 @@ app.post("/register", async (req, res) => {
         name,
         email,
         password,
+        phoneNumber : "",
       });
+
+      console.log("done");
   
       await newUser.save();
   
@@ -184,21 +187,23 @@ app.post("/login", async (req, res) => {
 
 app.post("/getProducts",async (req, res) => {
   try {
-    const { category,gender} = req.body;
+    let {category,gender} = req.body;
+
     let query = {};
-    if(!gender)
-    {
+
+    if (!gender) {
       query = {
-        category: { $regex: `.*${category}.*`, $options: "i" },
-      }; 
-    }
-    else {
+        category: { $regex: category, $options: "i" },
+      };
+    } else {
       query = {
-        category: { $regex: `.*${category}.*`, $options: "i" },
-        for: { $regex: `.*${gender}.*`, $options: "i" },
+        $and: [
+          { category: { $regex: category, $options: "i" } },
+          { for: gender.toLowerCase()},
+        ],
       };
     }
-
+    
 
     const products = await Product.find(query);
 
@@ -206,15 +211,13 @@ app.post("/getProducts",async (req, res) => {
       return res.status(404).json({ message: "No products found" });
     }
 
-    res.json(products);
+    res.status(200).json(products);
+
   } catch (error) {
     console.error("Error fetching products:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
-
-
-
 
 app.post("/addProduct",verify,async (req, res) => {
   try {
@@ -471,8 +474,6 @@ app.post("/addToCart",verify,async (req, res) => {
     return res.status(400).json({ message: "Email and product ID are required" });
   }
 
-  console.log(email, productId);
-
   try {
     const product = await Product.findById(productId);
     if (!product) {
@@ -560,7 +561,11 @@ app.get('/getUserByEmail/:email', verify, async (req, res) => {
 
 app.get("/getAllProducts",async (req, res) => {
   try {
-    const products = await Product.find({});
+
+    const products = await Product.aggregate([
+      { $sample: { size: await Product.countDocuments() } } 
+    ]);
+
     res.status(200).json(products);
   } catch (error) {
     console.error("Error fetching products:", error);
@@ -615,23 +620,30 @@ app.put('/updateProduct/:id', verify, async (req, res) => {
   }
 });
 
+
 app.post('/searchProducts', async (req, res) => {
-  const {product} = req.body;
+  const { product } = req.body;
+  
   if (!product) {
     return res.status(400).json({ message: "Search query is required." });
   }
 
   try {
-    const products = await Product.find({
-      $or: [
-        { productName: { $regex: product, $options: 'i' } },
-        { brand: { $regex: product, $options: 'i' } },
-        { category: { $regex: product, $options: 'i' } },
-      ],
-    });
+    const allProducts = await Product.find();
 
-    res.status(200).json(products);
+    const options = {
+      keys: ['productName','brand','category','for'],  
+      threshold: 0.4,  
+      includeScore: true, 
+    };
 
+    const fuse = new Fuse(allProducts, options);
+
+    const results = fuse.search(product);
+
+    const searchResults = results.map(result => result.item);
+
+    res.status(200).json(searchResults);
   } catch (error) {
     console.error('Error during search:', error);
     res.status(500).json({ message: "Server error." });
@@ -640,14 +652,11 @@ app.post('/searchProducts', async (req, res) => {
 
 
 
+
+
 app.get("/", async (req, res) => {
   try {
-    let data = await Product.find({for : "function toLowerCase() { [native code] }"});
-    for(let item of data)
-    {
-      item.for = "women";
-      await item.save();
-    }
+    let data = await Product.find({for : "men",category : "fashion"});
     res.json(data);
   } catch (error) {
     console.error("Error updating products:", error);

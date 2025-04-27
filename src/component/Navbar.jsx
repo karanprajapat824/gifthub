@@ -4,27 +4,17 @@ import { FaUserCircle } from "react-icons/fa";
 import { FiShoppingCart } from "react-icons/fi";
 import { useNavigate } from 'react-router-dom';
 import {AuthContext} from '../App';
-import { useContext,useState } from 'react';
+import { useContext,useState,useEffect } from 'react';
 
 const Navbar = ()=>{
     const navigateTo = useNavigate();
-    const {login,logout} = useContext(AuthContext);
+    const {login,logout,cart} = useContext(AuthContext);
     const [search,setSearch] = useState("");
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const response = await fetch(`http://localhost:4040/getUserInfo`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-            });
-            if (response.ok) {
-                const item = await response.json();
-                console.log(item);
-            }
-        }
-    },[]);
+    const handleLogout = async () => {
+        logout();
+        navigateTo("/");
+    }
     return(
         <div>
             <div className='navbar'>
@@ -52,7 +42,7 @@ const Navbar = ()=>{
                         {
                             login ? <><div onClick={()=>navigateTo("/profile")}>Profile</div>
                             &nbsp;&nbsp;&nbsp;&nbsp;
-                            <div onClick={logout}>Logout</div>
+                            <div onClick={handleLogout}>Logout</div>
                             </> : 
                             <div onClick={()=>navigateTo("/login")}>Login</div>
                         }
@@ -60,7 +50,7 @@ const Navbar = ()=>{
 
                     <div onClick={()=>navigateTo("/cart")} className='cart'>
                         <FiShoppingCart />
-                        <div>0</div>
+                        <div>{cart.length}</div>
                         <span>Cart</span>
                     </div>
                 </div>

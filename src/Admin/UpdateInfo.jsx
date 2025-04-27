@@ -35,7 +35,7 @@ const UpdateInfo = () => {
         if (response.ok) {
           const data = await response.json();
           if (typeof data.details === "object") {
-            data.details = JSON.stringify(data.details, null, 2); // Pretty format for textarea
+            data.details = JSON.stringify(data.details, null, 2); 
           }
           setForm(data);
         } else {

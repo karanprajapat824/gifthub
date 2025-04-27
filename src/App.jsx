@@ -7,7 +7,7 @@ import Register from "./component/Register";
 import Cart from "./component/Cart";
 import AdminDashboard from './Admin/AdminDashboard';
 import AddProduct from './Admin/AddProduct';
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import { createContext, useState, useEffect } from 'react';
 import ProductDetail from './component/ProductDetail';
 import BuyNow from './component/BuyNow';
@@ -25,6 +25,8 @@ function App() {
   const [role, setRole] = useState(null);
   const [loading, setLoading] = useState(true);
   const [email,setEmail] = useState(null);
+  const [cart,setCart] = useState([]);
+
 
   const handleRegister = async (name, email, password) => {
     const validDomains = ["gmail.com", "yahoo.com", "outlook.com", "hotmail.com"];
@@ -163,10 +165,35 @@ function App() {
     }
   }, []);
 
+  const fetchCart = async () => {
+    try {
+      const response = await fetch(`http://localhost:4040/getCart/${email}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "authorization": `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setCart(data);
+      } else {
+        console.error("Failed to fetch cart");
+      }
+    } catch (error) {
+      console.error("Error fetching cart:", error);
+    }
+  }
+
+  useEffect(() => {
+    fetchCart();
+  },[cart]);
+
   return (
     <div>
       <BrowserRouter>
-        <AuthContext.Provider value={{ login, handleRegister, setLogin, handleLogin, logout, role, token,email}}>
+        <AuthContext.Provider value={{ login, handleRegister, setLogin, handleLogin, logout, role, token,email,fetchCart, cart,setCart }}>
           <Navbar />
           {loading ? (
             <div style={{ textAlign: 'center', marginTop: '2rem' }}>Loading...</div>
@@ -183,7 +210,6 @@ function App() {
               ) : (
                 <>
                   <Route path="/" element={<Dashboard />} />
-                  <Route path="/products/:category/:gender" element={<Product />} />
                   <Route path="/cart" element={<Cart />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/register" element={<Register />} />
@@ -192,7 +218,6 @@ function App() {
                   <Route path="/orders" element={<Orders />} />
                   <Route path="/profile" element={<UserProfile />} />
                   <Route path="/products" element={<Product />} />
-                  <Route path="/products/:category" element={<Product />} />
                 </>
               )}
             </Routes>

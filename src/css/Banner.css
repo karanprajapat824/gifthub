@@ -32,7 +32,11 @@
     gap : 2vw;
     box-sizing: border-box;
     box-shadow: 0px 1px 5px black;
-    overflow: scroll;
+    overflow-x: scroll;
+}
+
+.product-card-content::-webkit-scrollbar {
+    display: flex;
 }
 
 .product{

@@ -26,7 +26,7 @@ const ProductDetail = () => {
           try {
             data.details = JSON.parse(data.details);
           } catch (e) {
-            console.error("Failed to parse product.details:", e);
+            console.error("Failed to parse product.details:",e);
             data.details = {};
           }
         }
@@ -44,6 +44,7 @@ const ProductDetail = () => {
   };
 
   const handleAddToCart = async () => {
+    if(!login) navigateTo("/login");
     try {
       const response = await fetch("http://localhost:4040/addToCart", {
         method: "POST",
@@ -56,11 +57,9 @@ const ProductDetail = () => {
           productId: id,
         }),
       });
-
-      const data = await response.json();
-
-      setModalMessage(data.message || (response.ok ? "Product added to cart successfully!" : "Failed to add product to cart"));
-      setShowModal(true);
+        const data = await response.json();
+        setModalMessage(data.message);
+        setShowModal(true);
     } catch (error) {
       console.error("Error adding to cart:", error);
       setModalMessage("Something went wrong while adding to cart");

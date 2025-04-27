@@ -6,7 +6,7 @@ const Banner = ({mainHeading})=>{
     const [products,setProducts] = useState([]);
     
     const handleNavigate = (category) => {
-        navigate(`/products/${category}/${mainHeading}`);
+        navigate(`/products/?category=${category}&targetFor=${mainHeading}`);
       };
       
     useEffect(()=>{

@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../App";
 import { useNavigate } from "react-router-dom";
-import "./../css/ProductDetail.css"; // Reusing your ProductDetail styles
+import "./../css/ProductDetail.css"; 
 
 const DeleteProducts = () => {
   const { token, role } = useContext(AuthContext);

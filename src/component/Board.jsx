@@ -1,6 +1,27 @@
+import { useEffect, useState } from 'react';
 import './../css/Board.css';
 
-const Board = ({mainHeading,board})=>{
+const Board = ({mainHeading})=>{
+    const [board,setBoard] = useState([]);
+
+    useEffect(()=>{
+        const fetchData = async ()=>{
+            const response = await fetch("http://localhost:4040/getProducts",{
+                method : "POST",
+                headers : {
+                    "Content-Type" : "application/json"
+                },
+                body : JSON.stringify({
+                    category : mainHeading
+                })
+            });
+            if(response.ok){
+                const data = await response.json();
+                setBoard(data);            
+            }
+        }
+        fetchData();    
+    },[]);
     return(
         <div className='board'>
             <div className='board-content'>
@@ -9,30 +30,18 @@ const Board = ({mainHeading,board})=>{
                         <button>View All</button>
                 </div>
                 <div className='board-down'>
-                    <div className='round-board'>
-                        <div className='round-image'>
-                            <img src={board[0].image}></img>
-                        </div>
-                        <div className='round-board-heading'>{board[0].name}</div>
-                    </div>
-                    <div className='round-board'>
-                        <div className='round-image'>
-                        <img src={board[1].image}></img>
-                        </div>
-                        <div className='round-board-heading'>{board[1].name}</div>
-                    </div>
-                    <div className='round-board'>
-                        <div className='round-image'>
-                        <img src={board[2].image}></img>
-                        </div>
-                        <div className='round-board-heading'>{board[2].name}</div>
-                    </div>
-                    <div className='round-board'>
-                        <div className='round-image'>
-                        <img src={board[3].image}></img>
-                        </div>
-                        <div className='round-board-heading'>{board[3].name}</div>
-                    </div>
+                    {
+                        board?.slice(0,4).map((item,index)=>(
+                            <div key={index} className='round-board'>
+                            <div className='round-image'>
+                                <img src={item.images[0]}></img>
+                            </div>
+                            <div className='round-board-heading'>{item.productName}</div>
+                            </div>
+                        ))
+                    }
+                    
+                    
                 </div>
             </div>
         </div>

@@ -10,8 +10,8 @@ const Dashboard = ()=>{
             <Carousel />
             <Banner  mainHeading="Men"/>
             <Banner  mainHeading="Women"/>
-            {/* <Banner  mainHeading="For Kids"/> */}
-            {/* <Board mainHeading={"Flowers"} /> */}
+            <Banner  mainHeading="Kids"/>
+            <Board mainHeading={"Flowers"} />
             <Footer />
         </div>
     )

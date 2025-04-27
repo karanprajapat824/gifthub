@@ -5,16 +5,19 @@ import { useEffect, useState } from 'react';
 import { MdOutlineCurrencyRupee } from "react-icons/md";
 
 const Product = () => {
-    let { category,gender} = useParams();
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
-    const search = queryParams.get('search'); 
+
+    const search = queryParams.get('search');
+    const category = queryParams.get('category');
+    const gender = queryParams.get('targetFor');
+
     const [product, setProduct] = useState([]);
     const navigateTo = useNavigate();
 
     useEffect(() => {
+        
         const fetchData = async () => {
-            console.log(category);
             const response = await fetch(`http://localhost:4040/getProducts`, {
                 method: "POST",
                 headers: {
@@ -59,7 +62,7 @@ const Product = () => {
         if(search) fetchBySearch();
         else if(category || gender) fetchData();
         else fetchAllProducts();
-    }, [category, gender]);
+    }, [search, category,gender]);
 
     return (
         <div className='Mainproduct'>
