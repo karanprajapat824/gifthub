@@ -359,6 +359,7 @@ const AddProduct = () => {
         <option value="women">Women</option>
         <option value="kids">Kids</option>
         <option value="all">All</option>
+        <option value="all">flowers</option>
         </select>
 
 
@@ -389,7 +390,6 @@ const AddProduct = () => {
         </button>
         {message && <p className="message">{message}</p>}
         <button type="submit" className="submit-btn" onClick={handleSubmit}>Add Product</button>
-        <button className="submit-btn" onClick={seedProducts}>seed product </button>
       </div>
     </div>
   );

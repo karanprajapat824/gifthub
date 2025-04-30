@@ -31,6 +31,8 @@ const BuyNow = () => {
     if (response.ok) {
       const data = await response.json();
       setAddresses(data.address);
+      setSelectedAddress(data.address[0]);
+      console.log(data.address);
       if (data.length > 0) setSelectedAddress(data[0].id);
     }
   };
@@ -129,6 +131,7 @@ const BuyNow = () => {
     setAddressModel(false);
   }
 
+  // console.log(selectedAddress);
   return (
     <div className="buynow">
       {orderConfirm ? (
@@ -173,8 +176,11 @@ const BuyNow = () => {
                   onChange={(e) => setSelectedAddress(e.target.value)}
                 >
                   {addresses.map((addr, i) => (
-                    <option key={i} value={addr}>
-                      {addr}
+                    <option 
+                    onChange={(e => setSelectedAddress(e.target.value))}
+                    key={i} 
+                    value={addr}>
+                    {addr}
                     </option>
                   ))}
                 </select>

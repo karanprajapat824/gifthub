@@ -1,11 +1,18 @@
 import React, { useEffect, useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../App";
 import "./../css/UserProfile.css";
 
 const UserProfile = () => {
-  const { email, login, token } = useContext(AuthContext);
+  const { email, login, token ,logout} = useContext(AuthContext);
   const [user, setUser] = useState(null);
+  const naviageteTo = useNavigate();
 
+  const handleLogout = () => {
+    logout();
+    naviageteTo("/");
+  }
+  
   useEffect(() => {
     if (!email) return;
 
@@ -68,7 +75,9 @@ const UserProfile = () => {
           <h3>Cart Summary</h3>
           <p className="cart-items-count">🛒 Items in Cart: {user.cart?.length || 0}</p>
         </div>
+        
       </div>
+      <button onClick={handleLogout} className="buy-now logout-button">Logout</button>
     </div>
   );
 };

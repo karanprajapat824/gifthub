@@ -45,4 +45,10 @@
     margin: 0.3rem 0;
     font-size: 0.95rem;
   }
+
+  .order-actions{
+    display: flex;
+    gap: 1rem;
+    flex-direction: column;
+  }
   

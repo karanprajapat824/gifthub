@@ -41,20 +41,8 @@ const productSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
-const filterOptionSchema = new mongoose.Schema({
-  heading: String,
-  options: [String],       
-}, { _id: false });
-
-const categorySchema = new mongoose.Schema({
-   category : {type : String,required : true},
-   filter : [filterOptionSchema],
-   min : {type : Number},
-   max : {type : Number}
-});
-
 const orderSchema = new mongoose.Schema({
-  userEmail: { type: String, required: true }, // can also be userId if preferred
+  userEmail: { type: String, required: true }, 
   productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product", required: true },
   productName: { type: String, required: true },
   productImage: { type: String },
@@ -77,7 +65,6 @@ const orderSchema = new mongoose.Schema({
 
 const User = mongoose.model("User",userSchema);
 const Product = mongoose.model("Product",productSchema);
-const Filter = mongoose.model("filter",categorySchema);
 const Order = mongoose.model("order",orderSchema);
 
 const verify = async (req, res, next) => {
@@ -262,32 +249,6 @@ app.post("/addProduct",verify,async (req, res) => {
   }
 });
 
-app.post("/seedProduct", async (req, res) => {
-  try {
-    const {products} = req.body;
-    console.log(products);
-    if (!Array.isArray(products) || products.length === 0) {
-      return res.status(400).json({ message: "Please provide an array of products." });
-    }
-
-    for (const product of products) {
-      if (!product.productName || !product.category || !product.price) {
-        return res.status(400).json({ message: "Each product must include productName, category, and price." });
-      }
-    }
-
-    const insertedProducts = await Product.insertMany(products);
-
-    res.status(201).json({
-      message: `${insertedProducts.length} product(s) seeded successfully.`,
-      products: insertedProducts
-    });
-  } catch (error) {
-    console.error("Error seeding products:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-});
-
 app.get("/getAllCategory/:gender",async (req, res) => {
   try {
     let { gender } = req.params;
@@ -311,46 +272,6 @@ app.get("/getAllCategory/:gender",async (req, res) => {
   } catch (error) {
     console.error("Error fetching categories with products:", error);
     res.status(500).json({ message: "Failed to fetch category products." });
-  }
-});
-
-app.get("/getFilter/:category",async (req,res)=>{
-   try{
-      const {category} = req.params;
-      const data = await Filter.findOne({category});
-      res.status(200).json(data);
-   }catch(error)  
-   {
-    console.error("Failed to get filter:", error);
-    res.status(500).json({ message: "Failed to get filter." });
-   }
-})
-
-app.post("/updateFilter",async (req, res) => {
-  try {
-    const {category, heading, options,min,max} = req.body;
-    let item = await Filter.findOne({ category });
-    const newFilter = { heading, options };
-
-    if (!item) {
-      const created = new Filter({
-        category,
-        filter: [newFilter],
-        min,
-        max
-      });
-
-      await created.save();
-      return res.status(200).json({ message: "Filter created successfully." });
-    } else {
-      item.filter.push(newFilter);
-      await item.save();
-      return res.status(200).json({ message: "Filter updated successfully." });
-    }
-
-  } catch (error) {
-    console.error("Failed to update filter:", error);
-    res.status(500).json({ message: "Failed to update filter information." });
   }
 });
 
@@ -449,23 +370,6 @@ app.post("/placeOrder", verify, async (req, res) => {
     console.error("Error placing order:", err);
     res.status(500).json({ error: "Failed to place order" });
 }});
-
-app.post("/getUserOrders", verify, async (req, res) => {
-  try {
-    const { email } = req.body;
-
-    if (!email) {
-      return res.status(400).json({ message: "Email is required" });
-    }
-
-    const orders = await Order.find({ userEmail: email }).sort({ createdAt: -1 });
-
-    res.status(200).json(orders);
-  } catch (err) {
-    console.error("Error fetching user orders:", err);
-    res.status(500).json({ message: "Internal server error" });
-  }
-});
 
 app.post("/addToCart",verify,async (req, res) => {
   const { email, productId } = req.body;
@@ -573,7 +477,6 @@ app.get("/getAllProducts",async (req, res) => {
   }
 });
 
-
 app.delete("/deleteProduct/:id", verify, async (req, res) => {
   const { id } = req.params;
 
@@ -594,7 +497,6 @@ app.delete("/deleteProduct/:id", verify, async (req, res) => {
     res.status(500).json({ message: "Server error while deleting product" });
   }
 });
-
 
 app.put('/updateProduct/:id', verify, async (req, res) => {
   const { id } = req.params;
@@ -619,7 +521,6 @@ app.put('/updateProduct/:id', verify, async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
-
 
 app.post('/searchProducts', async (req, res) => {
   const { product } = req.body;
@@ -650,8 +551,40 @@ app.post('/searchProducts', async (req, res) => {
   }
 });
 
+app.get('/getOrders/:email', async (req, res) => {
+  const userEmail = req.params.email;
 
+  try {
+    const orders = await Order.find({ userEmail }).sort({ createdAt: -1 });
 
+    if (orders.length === 0) {
+      return res.status(404).json({ message: 'No orders found for this email.' });
+    }
+
+    res.status(200).json(orders);
+    
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    res.status(500).json({ message: 'Server error. Could not fetch orders.' });
+  }
+});
+
+app.delete('/cancelOrder/:orderId', async (req, res) => {
+  const orderId = req.params.orderId;
+  console.log(orderId);
+  try {
+    const deletedOrder = await Order.deleteOne({ productId : orderId });
+
+    if (!deletedOrder) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+    console.log(deletedOrder);
+    res.status(200).json({ message: 'Order cancelled successfully', order: deletedOrder });
+  } catch (error) {
+    console.error('Error cancelling order:', error);
+    res.status(500).json({ message: 'Server error while cancelling order' });
+  }
+});
 
 
 app.get("/", async (req, res) => {

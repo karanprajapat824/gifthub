@@ -15,7 +15,7 @@ function Cart() {
     try {
       const response = await fetch(`http://localhost:4040/removeFromCart`, {
         method: "POST",
-        headers: {
+        headers: {  
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
@@ -70,8 +70,8 @@ function Cart() {
                      <button 
                      style={{width : "15vw",margin : "2vh 2vw"}} 
                      className="add-cart"
-                     
-                     >Remove From Cart
+                      onClick={()=>removeItem(item._id)}
+                     > Remove From Cart
                      
                      </button> 
                      </div>

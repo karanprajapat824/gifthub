@@ -1,4 +1,3 @@
-import Sidebar from './Sidebar';
 import './../css/Product.css';
 import { useParams,useNavigate, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
@@ -66,10 +65,7 @@ const Product = () => {
 
     return (
         <div className='Mainproduct'>
-            {
-                category && gender && <Sidebar category={category} />
-            }
-            <div className='mainproduct-cards' style={{width : category && gender ? "80vw" : "100vw"}}>
+            <div className='mainproduct-cards' style={{width : "100vw"}}>
                 {product?.map((item, index) => (
                     <div className='mainProduct-card' key={index}>
                         <div className='card-image'>

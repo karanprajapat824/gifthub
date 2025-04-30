@@ -11,10 +11,6 @@ const Navbar = ()=>{
     const {login,logout,cart} = useContext(AuthContext);
     const [search,setSearch] = useState("");
 
-    const handleLogout = async () => {
-        logout();
-        navigateTo("/");
-    }
     return(
         <div>
             <div className='navbar'>
@@ -42,7 +38,7 @@ const Navbar = ()=>{
                         {
                             login ? <><div onClick={()=>navigateTo("/profile")}>Profile</div>
                             &nbsp;&nbsp;&nbsp;&nbsp;
-                            <div onClick={handleLogout}>Logout</div>
+                            <div onClick={()=>navigateTo("/orders")}>My Orders</div>
                             </> : 
                             <div onClick={()=>navigateTo("/login")}>Login</div>
                         }

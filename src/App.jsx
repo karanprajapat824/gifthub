@@ -188,7 +188,7 @@ function App() {
 
   useEffect(() => {
     fetchCart();
-  },[cart]);
+  },[cart,login]);
 
   return (
     <div>
